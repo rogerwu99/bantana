@@ -35,7 +35,13 @@ class BetaController extends AppController
 			
 			
     }
-    
+    function view_my_location($page = 1)
+    {
+			$id = $this->Auth->getUserId();
+            $profile = $this->User->findById($id);
+			
+			
+    }
     
 }
 

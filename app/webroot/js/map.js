@@ -1,19 +1,17 @@
 // JavaScript Document
 function success(position) {
   var s = document.querySelector('#status');
-  alert('pre boo');
   if (s.className == 'success') {
     // not sure why we're hitting this twice in FF, I think it's to do with a cached result coming back    
     return;
   }
-  alert("boo");
   s.innerHTML = "found you!";
   s.className = 'success';
   
   var mapcanvas = document.createElement('div');
   mapcanvas.id = 'mapcanvas';
-  mapcanvas.style.height = '400px';
-  mapcanvas.style.width = '560px';
+  mapcanvas.style.height = '200px';
+  mapcanvas.style.width = '400px';
     
   document.querySelector('article').appendChild(mapcanvas);
   

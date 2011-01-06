@@ -63,7 +63,7 @@
           <div id="bottomrightcorner"></div>
         </div>
         <div id="footer">
-		<?php echo $this->element('footer'); ?>
+		<?php //echo $this->element('footer'); ?>
         </div>
       </div>
     </div>

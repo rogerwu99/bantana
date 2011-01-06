@@ -63,7 +63,7 @@ class AuthComponent extends Object {
    var $controller;
    var $here;
    var $components=array('Session');
-   var $uses = array('User', 'Group'); 
+   var $uses = array('User'); 
    var $current_user;
    var $from_session;
    var $from_post;
@@ -453,7 +453,7 @@ class AuthComponent extends Object {
         }
     } 
  
-    function user_in_group($name)
+/*    function user_in_group($name)
     {
         $Group = ClassRegistry::init('Group');
         
@@ -472,7 +472,7 @@ class AuthComponent extends Object {
 	         return false;
 	     } 
 	    
-    }
+    }*/
 	function login($data = null) {
 		$this->__setDefaults();
 		$this->_loggedIn = false;

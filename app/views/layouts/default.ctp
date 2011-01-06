@@ -62,6 +62,7 @@
     				<?php echo $this->element('logo'); ?>
 	                <?php echo $content_for_layout; ?>
 				</div>
+					
                 <div id="rightcolumn">
               		<?php echo $this->element('beta_r_col', array('c'=>$this->name, 'a'=>$this->action, 'deny'=>'nope')); ?>
                 </div>

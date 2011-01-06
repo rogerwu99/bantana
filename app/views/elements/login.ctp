@@ -1,6 +1,7 @@
 <?php if(!empty($_Auth['User'])): ?>
 	<div class="sidebar5" id="logged_in">
 	<div style="padding-top:2px;"class="smallercopywhite">
+			<?php echo $html->link('Location', array('controller'=>'beta','action'=>'view_my_location')); ?> |
 			<?php echo $html->link('Profile', array('controller'=>'beta','action'=>'view_my_profile')); ?> |
 			<?php echo $html->link('Sign Out', array('controller'=>'users', 'action'=>'logout')); ?>
 	</div>
