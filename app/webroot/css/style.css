@@ -785,3 +785,14 @@ body {
 	height:500px;
 	overflow:auto;
 }
+.dh{
+	background: url(../img/icons.png) no-repeat scroll -40px -100px transparent;
+	height: 16px;
+	width: 16px;
+	background-position:center center;
+	background-repeat:no-repeat;
+	position:absolute;
+	margin-top:-8px;
+	top: 50%;
+	
+}

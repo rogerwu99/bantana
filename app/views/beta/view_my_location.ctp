@@ -7,8 +7,7 @@
 	<article>
       <p>Finding your location: <span id="status">checking...</span></p>
    </article>
-
-			       	
+	       	
 		</div>
 	</div>
 	<br/>

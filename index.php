@@ -28,10 +28,10 @@
 /**
  *  Get Cake's root directory
  */
-	define('APP_DIR', 'klickabletv');
+	define('APP_DIR', 'app');
 	define('DS', DIRECTORY_SEPARATOR);
 	//define('ROOT', dirname(__FILE__));
-	define('ROOT', DS.'home'.DS.'rogerwu99'.DS.'moocrunch.com'.DS.'wwwroot');
+	define('ROOT', DS.'home'.DS.'rogerwu99'.DS.'bantana.com'.DS.'wwwroot');
 	
 	define('WEBROOT_DIR', 'webroot');
 	define('WWW_ROOT', ROOT . DS . APP_DIR . DS . WEBROOT_DIR . DS);

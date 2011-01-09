@@ -5,6 +5,13 @@
 			<?php echo $html->link('Profile', array('controller'=>'beta','action'=>'view_my_profile')); ?> |
 			<?php echo $html->link('Sign Out', array('controller'=>'users', 'action'=>'logout')); ?>
 	</div>
+	
+	<div style = "padding-top:2px;" class="smallercopy">
+	<!--<span class="dh"> </span>
+	--><?php echo $form->input('Status', array('options' => array('Available','Not Available','Stealth'))); ?>
+
+	</div>
+	
     <div class="bodycopy"><h2>Hi <? echo $_Auth['User']['name']; ?>!</h2></div>
 		<?php if(empty($_Auth['User']['fb_uid'])):
 			echo $html->link($html->image("signin_facebook.gif", array('alt'=>'Login With FB', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'facebookLogin'), array('escape'=>false));?>		<br><br>

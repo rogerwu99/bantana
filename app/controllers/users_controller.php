@@ -1,27 +1,36 @@
 <?php
 App::import('Vendor', 'oauth', array('file' => 'OAuth'.DS.'oauth_consumer.php'));
 App::import('Vendor', 'facebook');
-Configure::write('current_url', 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT']);
-		
+	
 class UsersController extends AppController {
 
 	var $name = 'Users';
 	var $helpers = array('Html', 'Form');
 	var $components = array('Auth', 'Recaptcha', 'Email');
-	var $uses = array('User', 'Mail');
+	var $uses = array('User', 'Mail', 'Available');
 	var $facebook;
 	var $twitter_id;
+	var $root_url = "http://www.bantana.com";//"http://localhost:8888";
 
 	function logout()
 	{
+		$user=$this->Auth->getUserInfo();
+		$avail=$this->Available->findByUserId((int)$user['id']);
+		//var_dump($this->Available->findByUserId((int)$user['id']));
+//var_dump($this->Available->findByUserId(50));
+		$this->Available->read(null, $avail['Available']['id']);
+		$this->Available->set('available' , false);
+		$this->Available->save();
+			
+		
 		$facebook = $this->createFacebook();
 		$session=$facebook->getSession();
 
-		$url = $facebook->getLogoutUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => Configure::read('current_url')));
+		$url = $facebook->getLogoutUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => $root_url));
 
 		$this->Session->destroy();
 		
-
+// when i logout with twitter only, i get redirected to facebook?
 
 		if(!empty($session)){
 			$facebook->setSession(null);
@@ -39,7 +48,7 @@ class UsersController extends AppController {
 	
 	public function getRequestURL(){
 		$consumer=$this->createConsumer();
-		$requestToken = $consumer->getRequestToken('http://twitter.com/oauth/request_token', Configure::read('current_url').'/users/twitterCallback');
+		$requestToken = $consumer->getRequestToken('http://twitter.com/oauth/request_token', $root_url.'/users/twitterCallback');
   		$this->Session->write('twitter_request_token', $requestToken);
 		$this->redirect('http://twitter.com/oauth/authenticate?oauth_token='.$requestToken->key);
 		exit();
@@ -173,32 +182,34 @@ class UsersController extends AppController {
 			
 			}
 			$this->User->save($this->data);
+			$id = $this->User->id;
+		//	echo $id;
+			$update_available = $this->Available->find('first', array('conditions' => (array('Available.user_id'=>$id))));
+			if (!empty($update_available)){
+					$this->Available->create();
+			}
+			else {
+				$this->Available->read(null, $update_available['Available']['id']);
+			}
+			$this->Available->set(array(
+											'user_id' => $id,
+											'available' => true
+											));
+			$this->Available->save();
 			
 			$user_record_1=array();
 			$user_record_1['Auth']['username']=$username;
 			$user_record_1['Auth']['password']=$password;
-			$joe = $this->data['User']['name'];
+			$joe = $username;
 			$this->Auth->authenticate_from_oauth($user_record_1['Auth']);
 	
-		// THE MAIL IS STILL NOT WORKING .... WTF
-		/*	if (!$update){
-				$this->Email->to = 'rogerwu99@gmail.com';
-        
-        		$this->Email->subject = 'NEW REGISTRANT';
-        		$this->Email->replyTo = 'robot@klickable.tv';
-        		$this->Email->from = 'ROBOT <robot@klickable.tv>';
-        		$this->Email->template = 'new_registrant';
-        		$this->set('email', $email_address);
-        		$this->set('name', $joe); 
-        		if ( $this->Email->send() ) {
-          			$this->Session->setFlash('Template html email sent');
-        		} else {
-				    $this->Session->setFlash('Template html email not sent');
-        		}
+			if (!$update){
 				//$this->redirect(array('controller'=>'mail', 'action'=>'send_new_registrant', $email_address, $joe));//$this->data['User']['name']));
+				$this->redirect(array('controller'=>'mail', 'action'=>'send_welcome_message', $email_address, $joe));//$this->data['User']['name']));
 			}
-*/			$this->redirect('/');
-			
+			else {
+				$this->redirect('/');
+			}
 		}
 	private  function __randomString($minlength = 20, $maxlength = 20, $useupper = true, $usespecial = false, $usenumbers = true){
         $charset = "abcdefghijklmnopqrstuvwxyz";
@@ -227,7 +238,7 @@ class UsersController extends AppController {
 	public function facebookLogin(){
 		$facebook = $this->createFacebook();
 		$session=$facebook->getSession();
-		$login_url = $facebook->getLoginUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => Configure::read('current_url').'/users/fbCallback'));
+		$login_url = $facebook->getLoginUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => $root_url.'/users/fbCallback'));
 		if(!empty($session)){
 			$this->Session->write('fb_acces_token',$session['access_token']);
 			$facebook_id = $facebook->getUser();
@@ -279,6 +290,8 @@ class UsersController extends AppController {
 		$session=$facebook->getSession();
 		if(!empty($session)){
 			try{
+				
+
 				$user=json_decode(file_get_contents('https://graph.facebook.com/me/friends?access_token='.$session['access_token']),true);
 				
 				foreach ($user['data'] as $friend){

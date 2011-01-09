@@ -40,8 +40,13 @@ function error(msg) {
   // console.log(arguments);
 }
 
+var planB = document.getElementById('plan');
+
+	
 if (navigator.geolocation) {
-	alert("geo working");
+	planB.style.display=none;
+	
+	//alert("geo working");
   navigator.geolocation.getCurrentPosition(success, error,{timeout:50000});
 /*navigator.geolocation.getCurrentPosition(function (position){
 var lat = position.coords.latitude;
@@ -52,6 +57,7 @@ alert('Lat: '+ lat +' \nLon: '+ lon);
 
 
 } else {
+		planB.style.display=block;
 	  error('not supported');
 }
 

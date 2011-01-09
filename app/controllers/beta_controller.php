@@ -1,4 +1,5 @@
 <?php
+Configure::write('current_url', 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT']);
 
 class BetaController extends AppController 
 {
@@ -32,6 +33,8 @@ class BetaController extends AppController
     {
 			$id = $this->Auth->getUserId();
             $profile = $this->User->findById($id);
+			echo Configure::read('current_url').' dude';
+			
 			
 			
     }
