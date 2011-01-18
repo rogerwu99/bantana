@@ -22,17 +22,30 @@
 		<?php endif;?>
 	<div class="smallercopy"> 
 		<?php 
-			if ($_Auth['User']['fb_pic_url']==''):  
-				echo $html->image($_Auth['User']['tw_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
-				echo $_Auth['User']['twitter_handle']; 
+			if ($_Auth['User']['fb_pic_url']==''): 
+				if ($_Auth['User']['tw_pic_url']==''):
+				echo "hi";
+					echo $html->image("default.gif", array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
+				else:
+				echo "bye";
+					echo $html->image($_Auth['User']['tw_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
+					echo $_Auth['User']['twitter_handle']; 
+				endif; 
+				
 				?>
 				<span class="bodycopy"><strong><?php	
 	            	echo $_Auth['User']['tw_location'];
     			?>
 				</strong></span>
 				<?php
-	                   	else: 
-				echo $html->image($_Auth['User']['fb_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
+	        else: 
+				if ($_Auth['User']['fb_pic_url']==''):
+					echo 'hi2';
+					echo $html->image("default.gif", array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
+				else:
+				echo 'bye2';
+					echo $html->image($_Auth['User']['fb_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
+				endif;
 				?>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<?php
@@ -55,14 +68,13 @@
  else:
 ?>		
 <div class="sidebar5" id="consumer" style="display:block">
-	<br/>
-		<?php
-echo $html->link($html->image("signin_facebook.gif", array('alt'=>'Login With FB', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'facebookLogin'), array('escape'=>false));	
+	<?php 
+	echo $form->create('Users', array('url'=>array('controller'=>'users', 'action'=>'register')));
+	echo $form->input('email', array('type'=>'text', 'label'=>false, 'class'=>'largeinput', 'error'=>false));
+	echo $form->submit('Sign Up!', array('name'=>'submit', 'div'=>'rightbutton'));
+	echo $form->end();
 ?>
-<br><br>
-<?php		echo $html->link($html->image("signin_twitter.gif", array('alt'=>'Login With Twitter', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'getRequestURL'),array('escape'=>false));
 
-?>
                  </div>
 	
 <?php endif; ?>

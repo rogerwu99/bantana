@@ -10,7 +10,7 @@ class UsersController extends AppController {
 	var $uses = array('User', 'Mail', 'Available');
 	var $facebook;
 	var $twitter_id;
-	var $root_url = "http://www.bantana.com";//"http://localhost:8888";
+	var $root_url = "http://localhost:8888";
 
 	function logout()
 	{
@@ -22,10 +22,10 @@ class UsersController extends AppController {
 		$this->Available->set('available' , false);
 		$this->Available->save();
 			
-		
+		$root_url = "http://localhost:8888";
+	
 		$facebook = $this->createFacebook();
 		$session=$facebook->getSession();
-
 		$url = $facebook->getLogoutUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => $root_url));
 
 		$this->Session->destroy();
@@ -46,7 +46,9 @@ class UsersController extends AppController {
 		$this->layout = 'about';
 	}
 	
-	public function getRequestURL(){
+	function getRequestURL(){
+	 $root_url = "http://localhost:8888";
+
 		$consumer=$this->createConsumer();
 		$requestToken = $consumer->getRequestToken('http://twitter.com/oauth/request_token', $root_url.'/users/twitterCallback');
   		$this->Session->write('twitter_request_token', $requestToken);
@@ -54,7 +56,7 @@ class UsersController extends AppController {
 		exit();
 	}
 	
-	public function twitterCallback() {
+	function twitterCallback() {
 		$requestToken = $this->Session->read('twitter_request_token');
 		$consumer = $this->createConsumer();
 		$accessToken = $consumer->getAccessToken('http://twitter.com/oauth/access_token', $requestToken);
@@ -75,6 +77,27 @@ class UsersController extends AppController {
 		$this->layout = 'about';
 		
   	}
+	public function register(){
+		$email = $this->data['Users']['email'];
+		$this->data=array();
+		$this->User->create();
+		$this->data['User']['email'] = (string) $email;
+		$password = $this->data['User']['password']= $this->__randomString();
+		$username = $this->data['User']['username']= (string) $email;
+		
+		$this->User->save($this->data);
+		
+		$user_record_1=array();
+		$user_record_1['Auth']['username']=$username;
+		$user_record_1['Auth']['password']=$password;
+		$joe = $username;
+		$this->Auth->authenticate_from_oauth($user_record_1['Auth']);
+		$this->redirect(array('controller'=>'mail', 'action'=>'send_welcome_message', $email, $joe));//$this->data['User']['name']));
+		$this->redirect('/');
+	
+	}
+	
+	
 	
 	public function verifyEmailAddress(){
 		$type = $this->data['User']['oauth'];
@@ -238,7 +261,9 @@ class UsersController extends AppController {
 	public function facebookLogin(){
 		$facebook = $this->createFacebook();
 		$session=$facebook->getSession();
-		$login_url = $facebook->getLoginUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => $root_url.'/users/fbCallback'));
+		$root_url = 'http://localhost:8888';
+		$full_url = $root_url . '/users/fbCallback';
+		$login_url = $facebook->getLoginUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => $full_url));
 		if(!empty($session)){
 			$this->Session->write('fb_acces_token',$session['access_token']);
 			$facebook_id = $facebook->getUser();
@@ -309,7 +334,6 @@ class UsersController extends AppController {
 		$user_id = array();
 		$accessToken=$this->Session->read('twitter_access_token');
 		$consumer = $this->createConsumer();
-		
 		if (!$id) {
 			$content = $consumer->get($accessToken->key,$accessToken->secret,'http://twitter.com/account/verify_credentials.xml', array());
 			$user = simplexml_load_string($content);
@@ -328,16 +352,7 @@ class UsersController extends AppController {
 			$x++;
 			if ($x>20) break;
 		}
-		
 		return $user_id;
-		
 	}
-	
-				
-	
-	
-	
-
-	
 }
 ?>

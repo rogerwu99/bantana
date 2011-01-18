@@ -9,7 +9,7 @@
 	<?php echo $scripts_for_layout ?>
 	<?php //echo $html->css('main'); ?>
 	<?php //echo $html->css('menu'); ?>
-	<?php echo $html->css('style-log'); ?>
+	<?php echo $html->css('style'); ?>
 	<?php echo $html->css('type'); ?>
 
 		<!--[if lt IE 8]>
@@ -46,12 +46,14 @@
               <div id="contentwrapper">
 			       	<?php if(empty($_Auth['User'])): ?>
               	<div id="contentwrapper">
+              
 				<div id="leftcolumn">
-				<?php echo $content_for_layout; ?>
+
+					<?php echo $content_for_layout; ?>
 				</div>
-    <!--          	<div id="rightcolumn"> -->
-                    <?php //echo $this->element('beta_r_col', array('c'=>$this->name, 'a'=>$this->action, 'deny'=>'')); ?>
-<!--              	</div>-->
+              	<div id="rightcolumn">
+                    <?php echo $this->element('beta_r_col', array('c'=>$this->name, 'a'=>$this->action, 'deny'=>'')); ?>
+              	</div>
 				</div>
 				
 					<?php else: ?>
@@ -61,10 +63,10 @@
 	                <?php echo $content_for_layout; ?>
 				</div>
 					
-<!--                <div id="rightcolumn"> -->
-              		<?php //echo $this->element('beta_r_col', array('c'=>$this->name, 'a'=>$this->action, 'deny'=>'nope')); ?>
-<!--                </div>
-	-->			</div>
+                <div id="rightcolumn">
+              		<?php echo $this->element('beta_r_col', array('c'=>$this->name, 'a'=>$this->action, 'deny'=>'nope')); ?>
+                </div>
+				</div>
         		    <?php endif; ?>
 			  </div> 
 			  </div> 

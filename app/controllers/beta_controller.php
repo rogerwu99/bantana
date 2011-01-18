@@ -13,7 +13,7 @@ class BetaController extends AppController
     	$this->User->recursive = -1;
 	   	$user = $this->Auth->getUserInfo();
 		$this->set(compact('user'));
-	 
+ 
     }
     
  	
@@ -33,7 +33,7 @@ class BetaController extends AppController
     {
 			$id = $this->Auth->getUserId();
             $profile = $this->User->findById($id);
-			echo Configure::read('current_url').' dude';
+		//	echo Configure::read('current_url').' dude';
 			
 			
 			
