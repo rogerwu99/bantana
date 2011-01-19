@@ -13,7 +13,10 @@ class BetaController extends AppController
     	$this->User->recursive = -1;
 	   	$user = $this->Auth->getUserInfo();
 		$this->set(compact('user'));
- 
+		$user_id = $user['id'];
+		$user_name = $user['username'];
+		$url = 'http://www.WaftMe.com?uId='.$user_id.'&userName='.$user_name;
+		$this->redirect('http://google.com'); 
     }
     
  	

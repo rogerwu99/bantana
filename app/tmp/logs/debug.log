@@ -905,3 +905,4 @@
 2011-01-18 10:25:49 Notice: Notice (8): Undefined variable: email_address in [APP/controllers/users_controller.php, line 95]
 2011-01-18 10:26:11 Notice: Notice (8): Undefined variable: email_address in [APP/controllers/users_controller.php, line 86]
 2011-01-18 10:26:11 Notice: Notice (8): Undefined variable: email_address in [APP/controllers/users_controller.php, line 95]
+2011-01-18 12:07:12 Notice: Notice (8): Trying to get property of non-object in [APP/controllers/users_controller.php, line 69]
