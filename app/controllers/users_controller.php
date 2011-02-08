@@ -6,12 +6,16 @@ class UsersController extends AppController {
 
 	var $name = 'Users';
 	var $helpers = array('Html', 'Form');
-	var $components = array('Auth', 'Recaptcha', 'Email');
+	var $components = array('Auth', 'Recaptcha', 'Email' );//,'Uploader.Uploader');
 	var $uses = array('User', 'Mail', 'Available');
 	var $facebook;
 	var $twitter_id;
 	var $root_url = "http://localhost:8888";
 
+	function pass(){
+		$this->Session->write('url_params', $this->params['url']);
+		$this->redirect('/');
+	}
 	function logout()
 	{
 		$user=$this->Auth->getUserInfo();
@@ -44,6 +48,7 @@ class UsersController extends AppController {
 	function login()
     {
 		$this->layout = 'about';
+		
 	}
 	
 	function getRequestURL(){
@@ -87,6 +92,62 @@ class UsersController extends AppController {
 		
 		$this->User->save($this->data);
 		
+		$user_record_1=array();
+		$user_record_1['Auth']['username']=$username;
+		$user_record_1['Auth']['password']=$password;
+		$joe = $username;
+		$this->Auth->authenticate_from_oauth($user_record_1['Auth']);
+		$this->redirect(array('controller'=>'mail', 'action'=>'send_welcome_message', $email, $joe));//$this->data['User']['name']));
+		$this->redirect('/');
+	
+	}
+	public function corporate(){
+		$this->layout='default';
+		$this->set('ranges',range(1,25)); 
+	}
+	
+	public function corpReg(){
+		$email = $this->data['User']['Email'];
+		$address_raw = $this->data['User']['Address'];
+		$address1 = str_replace('+','%20',urlencode($this->data['User']['Address']));
+		$zip = $this->data['User']['Zip'];
+		$range = $this->data['User']['Range'];
+		$name=$this->data['User']['Name'];
+		$password = $this->data['User']['new_password'];
+		$this->data=array();
+		$this->User->create();
+		
+		    
+		$this->data['User']['name']=$name;
+		$this->data['User']['email'] = (string) $email;
+		$this->data['User']['address']=$address_raw;
+		
+//		service_call to waft.me
+		
+		
+		//replace spaces in address1 with escape cahrs
+		
+		
+		
+	
+		$this->data['User']['range'] = $range;
+	
+		$url="http://local.yahooapis.com/MapsService/V1/geocode?appid=89YEQTHIkY2SU4r0q7se6KONjW1X8WhRKA--&street=".$address1."&zip=".$zip;
+
+		$xmlObject = simplexml_load_string(file_get_contents($url));
+		
+		
+		$lat=$xmlObject->Result->Latitude;
+		$long=$xmlObject->Result->Longitude;
+		
+	
+		$this->data['User']['longitude']=(float) $long;
+		$this->data['User']['latitude']= $lat;
+		
+		$password = $this->data['User']['password'] = $this->Auth->hasher($password); 
+		$username = $this->data['User']['username']= (string) $email;
+		$this->data['User']['path']='default.png';
+		$this->User->save($this->data);
 		$user_record_1=array();
 		$user_record_1['Auth']['username']=$username;
 		$user_record_1['Auth']['password']=$password;
@@ -354,5 +415,79 @@ class UsersController extends AppController {
 		}
 		return $user_id;
 	}
+	function edit(){
+		if (!empty($this->data)) {
+			$name=$this->data['User']['Name'];
+			$password = $this->Auth->hasher($this->data['User']['new_password']);
+
+			$this->User->read(null,$this->Auth->getUserId());
+			$this->User->set(array(
+								   'password'=>$password,
+								   'name'=>$name
+								   ));
+	        $this->User->save();
+			$username=$this->User->read('username',$this->Auth->getUserId());
+			$user_record_1=array();
+			$user_record_1['Auth']['username']=$username['User']['username'];
+			$user_record_1['Auth']['password']=$password;
+			$this->Auth->authenticate_from_oauth($user_record_1['Auth']);
+	        $this->redirect(array('controller'=>'beta', 'action'=>'view_my_profile'));
+		}
+	}
+	function edit_pic(){
+		if (!empty($this->data)) {
+			//	var_dump($this->data);
+			App::import('Vendor', 'upload');
+	        
+	        
+ 			$typelist=split('/', $_FILES['data']['type']['User']['photo']);
+			$allowed[0]='xxx';
+            $allowed[1]='gif';
+            $allowed[2]='jpg';
+            $allowed[3]='jpeg';
+            $allowed[4]='png';
+            
+			$allowed_val='';
+            $allowed_val=array_search($typelist[1], $allowed);
+
+			if (!$allowed_val){
+				$this->Session->setFlash('<span class="bodycopy" style="color:red;">Profile picture must be gif, jpg or png only.</span>');
+			}
+	        
+	    	else if(!empty($this->data) && $this->data['User']['photo']['size']>0){
+	          
+				$file = $this->data['User']['photo']; 
+	            $handle = new Upload($file);
+
+	            if ($handle->uploaded){
+					if($handle->image_src_x >= 100){
+						$handle->image_resize = true;
+		    			$handle->image_ratio_y = true;
+		    			$handle->image_x = 100;
+		    			
+		    			if($handle->image_y >= 100){
+		    				$handle->image_resize = true;
+			    			$handle->image_ratio_x = true;
+			    			$handle->image_y = 100;
+		    			}
+					}
+	    			$handle->Process('img/uploads');
+				
+				}
+	            if(!is_null($handle->file_dst_name) && $handle->file_dst_name!=''){
+					$user_path = $handle->file_dst_name;
+				}
+               
+  	            $handle->clean();
+	            $this->User->read(null,$this->Auth->getUserId());
+				$this->User->set('path', $user_path);
+  	        	$this->User->save();
+  	        }
+         
+	        $this->redirect(array('controller'=>'beta', 'action'=>'view_my_profile'));
+	        exit;
+	    }
+	}
+	
 }
 ?>

@@ -68,6 +68,7 @@ class AuthComponent extends Object {
    var $from_session;
    var $from_post;
    var $from_cookie;
+   var $from_oauth;
   
   
    function startup(&$controller){

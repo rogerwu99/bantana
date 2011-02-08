@@ -1,80 +1,54 @@
-<?php if(!empty($_Auth['User'])): ?>
-	<div class="sidebar5" id="logged_in">
-	<div style="padding-top:2px;"class="smallercopywhite">
-			<?php //echo $html->link('Location', array('controller'=>'beta','action'=>'view_my_location')); ?> <!-- | -->
-			<?php //echo $html->link('Profile', array('controller'=>'beta','action'=>'view_my_profile')); ?><!-- | -->
-			<?php echo $html->link('Sign Out', array('controller'=>'users', 'action'=>'logout')); ?>
-	</div>
-	
-	<div style = "padding-top:2px;" class="smallercopy">
-	<!--<span class="dh"> </span>
-	--><?php //echo $form->input('Status', array('options' => array('Available','Not Available','Stealth'))); ?>
-
-	</div>
-	
-    <div class="bodycopy"><h2>Hi <? echo $_Auth['User']['name']; ?>!</h2></div>
-		<?php if(empty($_Auth['User']['fb_uid'])):
-			//echo $html->link($html->image("signin_facebook.gif", array('alt'=>'Login With FB', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'facebookLogin'), array('escape'=>false));?>	<!--	<br><br>  -->
-	
-	<?php		 elseif(empty($_Auth['User']['tw_uid'])): 
-			//echo $html->link($html->image("signin_twitter.gif", array('alt'=>'Login With Twitter', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'getRequestURL'),array('escape'=>false));?>	<!--	<br><br>   -->
-	
-		<?php endif;?>
-	<div class="smallercopy"> 
+<div class="sidebar6" id="consumer" style="display:block">
+	<div class="corp_signup" id="logging_in" style="display:block">
+	<span class="bodycopy">Returning Users | 
 		<?php 
-			if ($_Auth['User']['fb_pic_url']==''): 
-				if ($_Auth['User']['tw_pic_url']==''):
-				echo "hi";
-					echo $html->image("default.gif", array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
-				else:
-				echo "bye";
-					echo $html->image($_Auth['User']['tw_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
-					echo $_Auth['User']['twitter_handle']; 
-				endif; 
-				
-				?>
-				<span class="bodycopy"><strong><?php	
-	            	echo $_Auth['User']['tw_location'];
-    			?>
-				</strong></span>
-				<?php
-	        else: 
-				if ($_Auth['User']['fb_pic_url']==''):
-					echo 'hi2';
-					echo $html->image("default.gif", array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
-				else:
-				echo 'bye2';
-					echo $html->image($_Auth['User']['fb_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
-				endif;
-				?>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<?php
-				echo $_Auth['User']['name']; 
+			echo $html->link("Register","#",array('onClick'=>'Effect.SlideDown(\'corp\'); Effect.SlideUp(\'logging_in\');return false;', 'class'=>'bodyblue'));
+			echo $form->create('Auth',array('url'=>substr($this->here,strlen($this->base)))); 
+    	 	?>
+	</span>
+			Email:<br>
+			<?
+			echo $form->input('Auth.username', array('label'=>false, 'class' => 'text_field_big', 'size'=>15)); 
+		 	?>
+			Password:
+			<?
+			echo $form->input('Auth.password', array('type' => 'password', 'label'=>false, 'class' => 'text_field_big', 'size'=>15, 'title'=>'Enter a password greater than 6 characters'));
 			?>
-				
-			<span class="bodycopy"><strong><?php	
-	                
-				echo $_Auth['User']['fb_location'];
-			endif; 
-			?>
-			</strong></span>
-		</div>
-		 
-            
+			<? 
+			echo $form->submit('Login!', array('name'=>'submit', 'div'=>'rightbutton'));
+			echo $form->end();
+		?>
 	</div>
+	<div class="corp_signup" id="corp" style="display:none">
+    <span class="bodycopy">Sign Up | 
+		<? 
+			echo $html->link("Sign In", "#", array('onClick'=>'Effect.SlideDown(\'logging_in\'); Effect.SlideUp(\'corp\');return false;'));
+			echo $form->create('User', array('url' => array('action' => 'corpReg'))); 
+		?>
+	</span>
+		Company Name:<br>
+		<?php 
+			echo $form->input('Name', array('error' => array('required' => 'Name is required'), 'label' => false, 'class' => 'text_field_big','size'=>15 )); 
+		?>
+		Address: <br>
+		<?php 
+			echo $form->input('Address', array('error' => array('required' => 'Address is required'), 'label' => false, 'class' => 'text_field_big','size'=>15 )); 
+		?>
+		<span>Zip:<br>	<?php echo $form->input('Zip', array('error' => array('required' => 'Zip is required'), 'label' => false, 'class' => 'text_field_big', 'size'=>15)); ?>
+		<!--Range:<br>-->          <?php //echo $form->input('Range', array('type'=>'select','options'=>$ranges,'error' => array('required' => 'Range is required'), 'label' => false, 'class' => 'text_field_big' )); ?></span>
+		Email:<br><?php echo $form->input('Email', array('error' => array('required' => 'Email is required'), 'label' => false, 'class' => 'text_field_big','size'=>15 )); ?>	
+		Password:<br><?php echo $form->input('new_password', array('type' => 'password', 'label'=>false, 'class'=>'text_field_big', 'size'=>15,'style'=>'width:217px', 'title'=>'Enter a password greater than 6 characters')); ?>
+		Confirm Password:<Br><?php echo $form->input('confirm_password', array('label'=>false, 'type' => 'password', 'class'=>'text_field_big','size'=>15, 'style'=>'width:217px','title'=>'Enter the same password for confirmation')); ?>
+		<?php echo $form->submit('GO!', array('name'=>'shorten', 'class'=>'button_green'));
+	?>	<?php echo $form->end(); ?>
+	<?php echo $this->element('pay');?>
+	</div>
+	
+	<div class="clear"></div>
 
 
-<?php 
- else:
-?>		
-<div class="sidebar5" id="consumer" style="display:block">
-	<?php 
-	echo $form->create('Users', array('url'=>array('controller'=>'users', 'action'=>'register')));
-	echo $form->input('email', array('type'=>'text', 'label'=>false, 'class'=>'largeinput', 'error'=>false));
-	echo $form->submit('Sign Up!', array('name'=>'submit', 'div'=>'rightbutton'));
-	echo $form->end();
-?>
+
+	
 
                  </div>
-	
-<?php endif; ?>
+

@@ -1,68 +1,31 @@
 <?php if(!empty($_Auth['User'])): ?>
 	<div class="sidebar5" id="logged_in">
-	<div style="padding-top:2px;"class="smallercopywhite">
-			<?php //echo $html->link('Location', array('controller'=>'beta','action'=>'view_my_location')); ?> <!-- | -->
-			<?php //echo $html->link('Profile', array('controller'=>'beta','action'=>'view_my_profile')); ?><!-- | -->
-			<?php echo $html->link('Sign Out', array('controller'=>'users', 'action'=>'logout')); ?>
-	</div>
-	
-	<div style = "padding-top:2px;" class="smallercopy">
-	<!--<span class="dh"> </span>
-	--><?php //echo $form->input('Status', array('options' => array('Available','Not Available','Stealth'))); ?>
-
-	</div>
-	
-    <div class="bodycopy"><h2>Hi <? echo $_Auth['User']['name']; ?>!</h2></div>
-		<?php if(empty($_Auth['User']['fb_uid'])):
-			//echo $html->link($html->image("signin_facebook.gif", array('alt'=>'Login With FB', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'facebookLogin'), array('escape'=>false));?>	<!--	<br><br>  -->
-	
-	<?php		 elseif(empty($_Auth['User']['tw_uid'])): 
-			//echo $html->link($html->image("signin_twitter.gif", array('alt'=>'Login With Twitter', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'getRequestURL'),array('escape'=>false));?>	<!--	<br><br>   -->
-	
-		<?php endif;?>
-	<div class="smallercopy"> 
-		<?php 
+	<div style="float:right;padding-top:2px;"class="smallercopywhite">
+		<span style="margin-top:-25px;"><?php 
 			if ($_Auth['User']['fb_pic_url']==''):  
 				echo $html->image($_Auth['User']['tw_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
-				echo $_Auth['User']['twitter_handle']; 
-				?>
-				<span class="bodycopy"><strong><?php	
-	            	echo $_Auth['User']['tw_location'];
-    			?>
-				</strong></span>
-				<?php
-	                   	else: 
+			else: 
 				echo $html->image($_Auth['User']['fb_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top'));
-				?>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<?php
-				echo $_Auth['User']['name']; 
-			?>
-				
-			<span class="bodycopy"><strong><?php	
-	                
-				echo $_Auth['User']['fb_location'];
 			endif; 
-			?>
+		?></span>
+			<span class="bodycopy"><strong>
+				<?php echo $html->link($_Auth['User']['name'], array('controller'=>'beta','action'=>'view_my_profile')); ?> | 
 			</strong></span>
-		</div>
-		 
-            
+			<?php echo $html->link('Location', array('controller'=>'beta','action'=>'view_my_location')); ?>  		
+			<span class="bodycopy"><strong>|</strong></span>
+			<?php echo $html->link('Sign Out', array('controller'=>'users', 'action'=>'logout')); ?>
+			<?php //echo $form->input('Status', array('options' => array('Available','Not Available','Stealth'))); ?>
 	</div>
-
-
-<?php 
- else:
-?>		
-<div class="sidebar5" id="consumer" style="display:block">
-	<br/>
-		<?php
-echo $html->link($html->image("signin_facebook.gif", array('alt'=>'Login With FB', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'facebookLogin'), array('escape'=>false));	
-?>
-<br><br>
-<?php		echo $html->link($html->image("signin_twitter.gif", array('alt'=>'Login With Twitter', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'getRequestURL'),array('escape'=>false));
-
-?>
-                 </div>
 	
-<?php endif; ?>
+	<div class="smallercopy" style="margin-left:100px;float:right;"> 
+		<?php if(empty($_Auth['User']['fb_uid'])):
+			echo $html->link($html->image("signin_facebook.gif", array('alt'=>'Login With FB', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'facebookLogin'), array('escape'=>false));?>	<!--	<br><br>  -->
+			<?php elseif(empty($_Auth['User']['tw_uid'])): 
+			echo $html->link($html->image("signin_twitter.gif", array('alt'=>'Login With Twitter', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'getRequestURL'),array('escape'=>false));?>	<!--	<br><br>   -->
+		<?php endif;?>
+	</div>
+	</div>
+<?php endif; ?>	
+	
+
+

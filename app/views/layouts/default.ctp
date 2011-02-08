@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
 <title>MOO Bantana</title>
@@ -11,6 +10,18 @@
 	<?php //echo $html->css('menu'); ?>
 	<?php echo $html->css('style-log'); ?>
 	<?php echo $html->css('type'); ?>
+	
+	<?php echo $html->css('reset.css'); ?>
+	<?php echo $html->css('text.css'); ?>
+	<?php echo $html->css('grid_fluid.css'); ?>
+	<?php echo $html->css('layout.css'); ?>
+	<?php echo $html->css('nav.css'); ?>
+
+	
+	<?php print $html->charset('UTF-8'); ?>
+	  <?php print $javascript->link('prototype'); ?>
+    <?php print $javascript->link('scriptaculous.js?load=effects'); ?>
+       
 
 		<!--[if lt IE 8]>
 <p>We do not support your current web browser.  Please upgrade to the latest <a href="http://www.microsoft.com/windows/Internet-explorer/default.aspx">Internet Explorer.</a></p>
@@ -30,7 +41,7 @@
 <body>
 	
   
-   <div id="bkgrnd">
+  <div id="bkgrnd">
       <div id="wrapper">
         <div id="maincontent">
           <div id="content">
@@ -44,30 +55,28 @@
             <div id="maincontentwrapper">
               <div id="shadowleft"></div>
               <div id="contentwrapper">
-			       	<?php if(empty($_Auth['User'])): ?>
-              	<div id="contentwrapper">
-				<div id="leftcolumn">
+		       	<?php if(empty($_Auth['User'])): ?>
+              	<div id="contentwrapper"><div id="leftcolumn">
+				<div class="container_12"><div class="grid_12">
+					<div class="nav">
+						<?php echo $this->element('login-prompt');?>
+					</div>
+						<?php echo $this->element('logo'); ?>
+				</div></div>
 				<?php echo $content_for_layout; ?>
-				</div>
-    <!--          	<div id="rightcolumn"> -->
-                    <?php //echo $this->element('beta_r_col', array('c'=>$this->name, 'a'=>$this->action, 'deny'=>'')); ?>
-<!--              	</div>-->
-				</div>
-				
-					<?php else: ?>
-                <div id="contentwrapper">
-              <div id="leftcolumn">
-    				<?php echo $this->element('logo'); ?>
-	                <?php echo $content_for_layout; ?>
-				</div>
-					
-<!--                <div id="rightcolumn"> -->
-              		<?php //echo $this->element('beta_r_col', array('c'=>$this->name, 'a'=>$this->action, 'deny'=>'nope')); ?>
-<!--                </div>
-	-->			</div>
-        		    <?php endif; ?>
-			  </div> 
-			  </div> 
+				</div></div>
+				<?php else: ?>
+                <div id="contentwrapper"><div id="leftcolumn">
+				<div class="container_12"><div class="grid_12">
+					<div class="nav">
+						<?php echo $this->element('login');?>
+					</div>
+						<?php echo $this->element('logo'); ?>
+				</div>		
+	            <?php echo $content_for_layout; ?>
+				</div></div> 
+			  	<?php endif; ?>
+			   </div></div>
 		<div id="roundedbottomwrapper">
          <div id="bottomleftcorner"></div>
           <div id="bottomcenterborderwrapper">

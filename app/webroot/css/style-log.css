@@ -1,11 +1,11 @@
 
 body {
-	background-image:url(../img/map_manhattan.jpg);
+	//background-image:url(../img/map_manhattan.jpg);
 	//background-attachment:scroll;
 	background-position:top center;
 	//background-repeat:repeat;
 	//background-color:#A7A8AD;
-	position:fixed;
+	//position:fixed;
 	top:0;
 	left:0;
 	background-color:#Fbfafb;
@@ -14,7 +14,8 @@ body {
   	margin-bottom:0px;
   	margin-left:0px;
 	width:100%;
-	height:100%
+	height:100%;
+	//overflow:hidden;
 }
 
 /* Main build and wrapper */
@@ -359,7 +360,7 @@ body {
 }
 
 .content1 { /* Full */
-	width:505px;
+	width:305px;
 	float: left;
 	padding-bottom: 12px;
 }
@@ -663,12 +664,13 @@ body {
 }
 
 .sidebar5 {
-	width:180px;
-	float: left;
-	margin-top: 10px;
-	padding-right: 25px;
+	width:450px;
+	float: right;
+	margin-top: 5px;
+	padding-right: 2px;
 	padding-bottom: 5px;
 	padding-left: 20px;
+	//border-style:dashed;
 }
 
 .sidebarcontainer {
@@ -685,6 +687,14 @@ body {
 	padding-bottom: 20px;
 }
 
+.sidebar6 {
+	width:650px;
+	float: left;
+	margin-top: 10px;
+	padding-right: 25px;
+	padding-bottom: 5px;
+	padding-left: 20px;
+}
 
 
 
@@ -803,3 +813,60 @@ body {
 	top: 50%;
 	
 }
+
+#corp_signup {
+
+color: #444;
+font-weight: bold;
+width: 65%;
+-moz-border-radius: 5px;
+border-radius: 5px;
+padding: 20px;
+background: #88bfe8; /* old browsers */
+background: -moz-linear-gradient(top, #88bfe8 0%, #70b0e0 100%); /* firefox */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#88bfe8), color-stop(100%,#70b0e0)); /* webkit */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88bfe8', endColorstr='#70b0e0',GradientType=0 ); /* ie */
+}
+
+.text_field_big {
+font-size: 1.3em;
+border: 1px solid #444;
+}
+
+.text_field_big:hover{
+border-color: #64acd8;
+
+}
+
+.text_field_big:focus {
+border-color: green;
+border-width: 3px;
+}
+.button_green{
+background: #6bba70; /* old browsers */
+
+background: -moz-linear-gradient(top, #6bba70 0%, #6bba70 100%); /* firefox */
+
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6bba70), color-stop(100%,#6bba70)); /* webkit */
+
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6bba70', endColorstr='#6bba70',GradientType=0 ); /* ie */
+width: 150px;
+padding: 10px;
+margin-left: 15px;
+margin-left: 15px;
+color: #fff;
+font-weight: bold;
+-moz-border-radius: 5px;
+border-radius: 5px;
+}
+
+.button_green:hover{
+background: #a4b357; /* old browsers */
+background: -moz-linear-gradient(top, #a4b357 0%, #75890c 100%); /* firefox */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a4b357), color-stop(100%,#75890c)); /* webkit */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a4b357', endColorstr='#75890c',GradientType=0 ); /* ie */
+color: #fff;
+pointer: cursor;
+
+}
+

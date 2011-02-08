@@ -3,7 +3,18 @@ class User extends AppModel {
 
 	var $name = 'User';
     var $actsAs = array('Containable');
-     
+	  				/*	'Uploader.Attachment' => array(
+        					'file' => array(
+            				'uploadDir' 	=> '/img/uploads/',	// Where to upload to, relative to app webroot
+            				'dbColumn'		=> 'path',	// The database column name to save the path to
+            				'maxNameLength'	=> 30,		// Max file name length
+            				'overwrite'		=> false,	// Overwrite file with same name if it exists
+            				'name'		=> '',		// The name to give the file (should be done right before a save)
+            				'transforms' 	=> array()	// What transformations to do on images: scale, resize, etc
+        					)
+    					)
+					);*/
+    
 	function identicalFieldValues($field=array(), $compare_field=null ) 
     {
         foreach( $field as $key => $value )

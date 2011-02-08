@@ -1,21 +1,21 @@
 <div id="beta" class="section-1">
-           <div id="contents">
-		  <?php if(!empty($_Auth['User']['fb_uid'])): ?>
-     Your Best 500 Friends
-	 <?php $friends = $this->requestAction('/users/get_friends'); 
-				$x = 0;
-				foreach ($friends as $friend){
-					?>
-					<a href="http://facebook.com/profile.php?id=<?php echo $friend['id'];?>"><img src="http://graph.facebook.com/<?php echo $friend['id']; ?>/picture?type=square" width=15 height=15 border=0 alt=<?php echo $friend['name'];?>></a>
-				<?php
-					$x++;
-					if ($x>500) break;
-				}
-		  endif; ?>
-			       	
-		</div>
-	</div>
-	<br/>
+  <div class="clear"></div>
+  
+  <div id="users_form">
+	<fieldset>
+ 		<legend><?php echo $results['User']['name']; ?></legend>
+		<?php echo $html->image($image_link, array('alt'=>'Your Profile','width'=>50,'height'=>50,'class'=>'top'));?>
+		<? echo $results['User']['address']; ?>
+		<? if(!is_null($results['User']['twitter_handle'])): 
+			echo $results['User']['twitter_handle'];
+			else:
+//			echo "Hook up your Twitter";
+			endif;
+		?>
+		<?php echo $ajax->link('Edit', array('controller'=>'users', 'action'=>'edit'), array( 'update' => 'users_form')); ?>
 	
+	</fieldset>
+</div>
+</div>
 	<div class="clear"></div>
 	
