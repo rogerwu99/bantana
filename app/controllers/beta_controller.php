@@ -8,13 +8,16 @@ Configure::write('current_url', 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['
 class BetaController extends AppController 
 {
     var $name = 'Beta';
-    var $uses = array('User', 'Mail'); 
+    var $uses = array('User', 'Mail','Redeem','Discount'); 
     var $helpers = array('Html', 'Form', 'Javascript', 'Xml', 'Crumb', 'Ajax');
     var $components = array('Utils', 'Email', 'RequestHandler');
    
     function index()
     {
-		
+			 if(is_null($this->Auth->getUserId())){
+                       Controller::render('/deny');
+         }
+	
 		$param_array=$this->Session->read('url_params');
 	
 		$this->User->recursive = -1;
@@ -62,8 +65,13 @@ class BetaController extends AppController
     
     function view_my_profile($page = 1)
     {
+		
+			 if(is_null($this->Auth->getUserId())){
+                       Controller::render('/deny');
+         }
+	
 		if (empty($this->data)) {
-			$root_url ='http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT'];
+			$root_url =ROOT_URL;
 		
 			$id = $this->Auth->getUserId();
             $results = $this->User->find('first', array('conditions' => (array('User.id'=>$id))));
@@ -85,6 +93,26 @@ class BetaController extends AppController
 			$this->set('image_can_change', $image_can_change);
 			$this->set('image_link', $image_link);
 			$this->set(compact('results'));
+			
+			$disc_array=array();
+			$disc_desc=array();
+			$db_results=$this->Redeem->find('all',array('conditions'=>array('Redeem.user_id'=>$id)));
+			if (!empty($db_results)) {
+				foreach ($db_results as $key=>$value){
+					if ($db_results[$key]['Redeem']['hidden']!=1){
+						$disc_results = $this->Discount->findById($db_results[$key]['Redeem']['disc_id']);
+						$disc_user = $this->User->findById($disc_results['Discount']['user_id']);
+						array_push($disc_array,$disc_results);
+						array_push($disc_desc,$disc_user);
+					}
+				}
+				$this->set('d_desc',$disc_desc);
+				$this->set('d_results',$disc_array);
+			}
+			else {
+				$this->set('none',true);
+			}
+			
 			$this->render();
 		}
 		else {
@@ -96,12 +124,22 @@ class BetaController extends AppController
     }
     function view_my_location($page = 1)
     {
+		
+			 if(is_null($this->Auth->getUserId())){
+                       Controller::render('/deny');
+         }
+	
 			$id = $this->Auth->getUserId();
             $profile = $this->User->findById($id);
 			
 			
     }
 	function manual_location(){
+		
+			 if(is_null($this->Auth->getUserId())){
+                       Controller::render('/deny');
+         }
+	
 		$url="http://local.yahooapis.com/MapsService/V1/geocode?appid=89YEQTHIkY2SU4r0q7se6KONjW1X8WhRKA--&street=".urlencode($this->data['Beta']['Address']);
 		$xmlObject = simplexml_load_string(file_get_contents($url));
 		$lat=$xmlObject->Result->Latitude;

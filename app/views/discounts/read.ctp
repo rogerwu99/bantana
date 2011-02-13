@@ -25,8 +25,9 @@
 			google.maps.event.trigger(gmarkers[i], 'click');
 		}
 
-		function createMarker(latlng, name_of_venue, discount) {
+		function createMarker(latlng, name_of_venue, discount, id) {
    			var contentString=discount;
+			var hrefString = "<a href=\"/discounts/show/"+id+"\">"; 
 			var marker = new google.maps.Marker({
         		position: latlng,
         		map: map,
@@ -37,7 +38,7 @@
         		if (!infowindow){
 					infowindow = new google.maps.InfoWindow();
 				}
-				infowindow.setContent('<div class=bodyblue><strong>'+name_of_venue+'</strong><br>'+contentString+'</div>'); 
+				infowindow.setContent('<div class=bodyblue><strong>'+name_of_venue+'</strong><br>'+contentString+'<br>'+hrefString+'Details</a></div>'); 
         		infowindow.open(map,marker);
         	});
    			
@@ -53,15 +54,21 @@
 			updateDiv.appendChild(anchor);
 			updateDiv.appendChild(document.createElement('br'));
 			updateDiv.appendChild(document.createTextNode(contentString));
-			updateDiv.appendChild(document.createElement('br'));
-			updateDiv.appendChild(document.createElement('br'));
-			
+			var anchor1 = document.createElement('a');
+			anchor1.setAttribute('href','/discounts/show/'+id);
+			anchor1.setAttribute('class','bodyblue');
+			anchor1.appendChild(document.createTextNode('Details'));
+				updateDiv.appendChild(document.createElement('br'));
+			updateDiv.appendChild(anchor1);
+		updateDiv.appendChild(document.createElement('br'));
+		updateDiv.appendChild(document.createElement('hr'));
+			updateDiv.style.overflow='auto';
 		}
 
   		
 		<?php foreach ($results as $key=>$value){?>
 			var myLatlng = new google.maps.LatLng(<?php echo $results[$key]['Discount']['lat']; ?>,<?php echo $results[$key]['Discount']['long']; ?>);
- 			createMarker(myLatlng, '<?php echo $results[$key]['Discount']['name']; ?>', '<?php echo $results[$key]['Discount']['text']; ?>' );
+ 			createMarker(myLatlng, '<?php echo $results[$key]['Discount']['name']; ?>', '<?php echo $results[$key]['Discount']['text']; ?>','<?php echo $results[$key]['Discount']['id']; ?>' );
 		<?php } ?>
 
 

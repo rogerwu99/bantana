@@ -163,6 +163,44 @@ background: -moz-linear-gradient(top, #88bfe8 0%, #70b0e0 100%); /* firefox */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#88bfe8), color-stop(100%,#70b0e0)); /* webkit */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88bfe8', endColorstr='#70b0e0',GradientType=0 ); /* ie */
 }
+.corp_input {
+
+color: #444;
+font-weight: bold;
+width: 95%;
+-moz-border-radius: 5px;
+border-radius: 5px;
+padding: 20px;
+background: #88bfe8; /* old browsers */
+background: -moz-linear-gradient(top, #88bfe8 0%, #70b0e0 100%); /* firefox */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#88bfe8), color-stop(100%,#70b0e0)); /* webkit */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88bfe8', endColorstr='#70b0e0',GradientType=0 ); /* ie */
+}
+.corp_td{
+	color: #444;
+font-weight: bold;
+font-family:Arial, Helvetica, sans-serif;
+//width: 100%;
+-moz-border-radius: 5px;
+border-radius: 5px;
+padding: 20px;
+background: #88bfe8; /* old browsers */
+background: -moz-linear-gradient(top, #88bfe8 0%, #70b0e0 100%); /* firefox */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#88bfe8), color-stop(100%,#70b0e0)); /* webkit */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88bfe8', endColorstr='#70b0e0',GradientType=0 ); /* ie */
+}
+.disc_td{
+color: #3F6
+font-weight: bold;
+//width: 100%;
+-moz-border-radius: 5px;
+border-radius: 5px;
+padding: 8px;
+background: #5153d6; /* old browsers */
+background: -moz-linear-gradient(top, #8182d3 0%, #afafd1 100%); /* firefox */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#8182d3), color-stop(100%,#afafd1)); /* webkit */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#8182d3', endColorstr='#afafd1',GradientType=0 ); /* ie */
+}
 
 .text_field_big {
 font-size: 1.7em;
@@ -175,6 +213,20 @@ border-color: #64acd8;
 }
 
 .text_field_big:focus {
+border-color: green;
+border-width: 3px;
+}
+.text_field_med {
+font-size: 1em;
+border: 1px solid #444;
+}
+
+.text_field_med:hover{
+border-color: #64acd8;
+
+}
+
+.text_field_med:focus {
 border-color: green;
 border-width: 3px;
 }

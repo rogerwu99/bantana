@@ -15,8 +15,9 @@ var infowindow;
 var gmarkers = []; 
 var updateDiv;
 var global_counter=0;
-	
-window.onload=function() {
+var onLoad = true;
+
+function load() {
 	 var myOptions = {
      	zoom: 17,
 		center:newyork,
@@ -38,7 +39,6 @@ window.onload=function() {
 <?php } ?>
 	setTimeout(cycle,2000);
 	
-
 
 }
 google.maps.event.addListener(map, 'click', function() {
@@ -66,7 +66,7 @@ function createMarker(latlng, name_of_venue, discount) {
     	infowindow.open(map,marker);
     });
    	gmarkers.push(marker);
-	var anchor = document.createElement('a');
+	/*var anchor = document.createElement('a');
 	url = "#";
 	anchor.setAttribute('href',url);
 	anchor.setAttribute('onclick','myclick(' + (gmarkers.length-1) + ')');
@@ -76,8 +76,31 @@ function createMarker(latlng, name_of_venue, discount) {
 	updateDiv.appendChild(document.createTextNode(contentString));
 	updateDiv.appendChild(document.createElement('br'));
 	updateDiv.appendChild(document.createElement('br'));
-}
+*/}
+function show_div(x){
+	k = document.getElementById(x);
+	switch(x){
+		case 'slide1':
+			document.getElementById('slide2').style.display='none';
+			document.getElementById('slide3').style.display='none';
+			break;
+		case 'slide2':
+			document.getElementById('slide1').style.display='none';
+			document.getElementById('slide3').style.display='none';
+			if(onLoad) {
+    	        load();
+	            onLoad = false;
+        	}
 
+			break;
+		case 'slide3':
+			document.getElementById('slide1').style.display='none';
+			document.getElementById('slide2').style.display='none';
+			break;
+	}
+	k.style.display='block';
+	
+}
 
   		
 
@@ -86,12 +109,28 @@ function createMarker(latlng, name_of_venue, discount) {
 
 
 </script>
- <article>
- <div id="right_col" style="width:200px;float:right;"></div>
- <div id="mapcanvas" style="width:500px;height:400px;"></div>
- 
-</article>
+ <div id="slide1" style="display:block;">
+ 	<? echo $html->image('empty_restaurant.jpg'); ?>
+<div style="float:right;width:200px;"> Step 1 - Offer deals to prospective customers roving the streets during slow times (75% off between 3-4pm) or to move inventories (50% off a Ham Sandwich) <br>
+<? echo $html->link($html->image('right_arrow.png',array('alt'=>'Next', 'width'=>50, 'height'=>50, 'border'=>0)),"#",array('onClick'=>'show_div(\'slide2\');return false;','escape'=>false)); ?>
+</div>
+ </div>
+ <div id="slide2" style="display:none;">
+ <div id="right_col" style="width:200px;float:right;">
+Step 2 - Publish the deal to users closeby.<br>
+ <? echo $html->link($html->image('left_arrow.png',array('alt'=>'Prev', 'width'=>50, 'height'=>50, 'border'=>0)),"#",array('onClick'=>'show_div(\'slide1\');return false;','escape'=>false)); ?>
+<? echo $html->link($html->image('right_arrow.png',array('alt'=>'Next', 'width'=>50, 'height'=>50,'border'=>0)),"#",array('onClick'=>'show_div(\'slide3\');return false;','escape'=>false)); ?>
 
+ 
+ </div>
+ <div id="mapcanvas" style="width:500px;height:400px;"></div>
+
+ </div>
+ <div id="slide3" style="display:none;">
+ 	<? echo $html->image('full_restaurant.jpg'); ?>
+<div style="float:right;width:200px;"> Step 3 - Get ready for the customers....Analytics to come! <Br>
+<? echo $html->link($html->image('left_arrow.png',array('alt'=>'Prev', 'width'=>50, 'height'=>50,'border'=>0)),"#",array('onClick'=>'show_div(\'slide2\');return false;','escape'=>false)); ?>
+ </div>
 	
 	
 	

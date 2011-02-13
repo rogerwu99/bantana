@@ -121,14 +121,18 @@ window.onload=function() {
 	 var marker = new google.maps.Marker({
 										 position: latLng,
 										 map: map,
-										 title: 'test'
+										 title: 'You are here!'
 										 
 										 });
 	map.setCenter(latLng);
-		var eDiv=document.getElementById("status");
+	document.getElementById("myLat").value = position.coords.latitude;
+document.getElementById("myLong").value = position.coords.longitude;
+	var eDiv=document.getElementById("status");
 		eDiv.appendChild(document.createTextNode("Found you"));
+		document.getElementById("disc_div").style.display="block";
+
 		
-alert(position.coords.latitude + " "+position.coords.longitude);
+//alert(position.coords.latitude + " "+position.coords.longitude);
 	 
    }
    

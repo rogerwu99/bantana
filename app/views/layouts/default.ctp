@@ -20,7 +20,7 @@
 	
 	<?php print $html->charset('UTF-8'); ?>
 	  <?php print $javascript->link('prototype'); ?>
-    <?php print $javascript->link('scriptaculous.js?load=effects'); ?>
+    <?php print $javascript->link('scriptaculous.js?load=effects,slider'); ?>
        
 
 		<!--[if lt IE 8]>

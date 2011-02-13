@@ -17,8 +17,19 @@
 		<?
 			echo $html->link("Nevermind", "#", array('onClick'=>'Effect.SlideUp(\'response\');return false;'));
 		?>
+	
 	</span>
 	
+		<div id="disc_div" style="display:none;">
+		<div style="float:right;"> 	
+		<?php echo $form->create('Discounts'); ?>
+			<input id="myLat" name="data[Discounts][myLat]" type="hidden">
+	  		<input id="myLong" name="data[Discounts][myLong]" type="hidden">
+	   <?php echo $ajax->submit('Get Discounts', array('url'=> array('controller'=>'discounts', 'action'=>'read'), 'update' => 'discounts'));
+			 echo $form->end();
+		?>
+
+	</div></div>
 		
 		<div id="response" style="display:none;">
 		  <?php echo $form->create('Beta'); ?>
@@ -28,17 +39,9 @@
 		   ?>
 		</div>
 	
-	<div style="float:right;">	
-		<?php echo $form->create('Discounts'); ?>
-			<input id="myLat" name="data[Discounts][myLat]" type="hidden">
-	  		<input id="myLong" name="data[Discounts][myLong]" type="hidden">
-	   <?php echo $ajax->submit('Get Discounts', array('url'=> array('controller'=>'discounts', 'action'=>'read'), 'update' => 'discounts'));
-			 echo $form->end();
-		?>
-	</div>
-			<article>
+		<article>
       <p>Finding your location: <span id="status">checking...</span></p>
-   	<div id="right_col" style="float:right;width:200px;"></div>
+   	<div id="right_col" style="float:right;width:200px;height:400px;"></div>
 	
    </article>
 	

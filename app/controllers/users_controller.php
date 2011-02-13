@@ -6,11 +6,11 @@ class UsersController extends AppController {
 
 	var $name = 'Users';
 	var $helpers = array('Html', 'Form');
-	var $components = array('Auth', 'Recaptcha', 'Email' );//,'Uploader.Uploader');
+	var $components = array('Auth', 'Recaptcha', 'Email','Paypal','Ssl');//,'Uploader.Uploader');
 	var $uses = array('User', 'Mail', 'Available');
 	var $facebook;
 	var $twitter_id;
-	var $root_url = "http://localhost:8888";
+//	var $root_url = "http://localhost:8888";
 
 	function pass(){
 		$this->Session->write('url_params', $this->params['url']);
@@ -26,11 +26,11 @@ class UsersController extends AppController {
 		$this->Available->set('available' , false);
 		$this->Available->save();
 			
-		$root_url = "http://localhost:8888";
+		//$root_url = "http://localhost:8888";
 	
 		$facebook = $this->createFacebook();
 		$session=$facebook->getSession();
-		$url = $facebook->getLogoutUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => $root_url));
+		$url = $facebook->getLogoutUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => ROOT_URL));
 
 		$this->Session->destroy();
 		
@@ -52,10 +52,10 @@ class UsersController extends AppController {
 	}
 	
 	function getRequestURL(){
-	 $root_url = "http://localhost:8888";
+	 //$root_url = "http://localhost:8888";
 
 		$consumer=$this->createConsumer();
-		$requestToken = $consumer->getRequestToken('http://twitter.com/oauth/request_token', $root_url.'/users/twitterCallback');
+		$requestToken = $consumer->getRequestToken('http://twitter.com/oauth/request_token', ROOT_URL.'/users/twitterCallback');
   		$this->Session->write('twitter_request_token', $requestToken);
 		$this->redirect('http://twitter.com/oauth/authenticate?oauth_token='.$requestToken->key);
 		exit();
@@ -107,6 +107,7 @@ class UsersController extends AppController {
 	}
 	
 	public function corpReg(){
+		$ch=curl_init();
 		$email = $this->data['User']['Email'];
 		$address_raw = $this->data['User']['Address'];
 		$address1 = str_replace('+','%20',urlencode($this->data['User']['Address']));
@@ -133,7 +134,7 @@ class UsersController extends AppController {
 		$this->data['User']['range'] = $range;
 	
 		$url="http://local.yahooapis.com/MapsService/V1/geocode?appid=89YEQTHIkY2SU4r0q7se6KONjW1X8WhRKA--&street=".$address1."&zip=".$zip;
-
+//http://where.yahooapis.com/geocode?q=1600+Pennsylvania+Avenue,+Washington,+DC&appid=[yourappidhere]
 		$xmlObject = simplexml_load_string(file_get_contents($url));
 		
 		
@@ -261,6 +262,7 @@ class UsersController extends AppController {
 					}
 					break;
 				}
+				$this->data['User']['tokens']=50;
 				$password = $this->data['User']['password']= $this->__randomString();
 				$username = $this->data['User']['username']= (string) $email_address;
 			
@@ -322,8 +324,8 @@ class UsersController extends AppController {
 	public function facebookLogin(){
 		$facebook = $this->createFacebook();
 		$session=$facebook->getSession();
-		$root_url = 'http://localhost:8888';
-		$full_url = $root_url . '/users/fbCallback';
+		//$root_url = 'http://localhost:8888';
+		$full_url = ROOT_URL . '/users/fbCallback';
 		$login_url = $facebook->getLoginUrl(array('req_perms' => 'email,user_birthday,user_about_me,user_location,publish_stream','next' => $full_url));
 		if(!empty($session)){
 			$this->Session->write('fb_acces_token',$session['access_token']);
@@ -416,6 +418,9 @@ class UsersController extends AppController {
 		return $user_id;
 	}
 	function edit(){
+	 if(is_null($this->Auth->getUserId())){
+                       Controller::render('/deny');
+         }
 		if (!empty($this->data)) {
 			$name=$this->data['User']['Name'];
 			$password = $this->Auth->hasher($this->data['User']['new_password']);
@@ -435,6 +440,9 @@ class UsersController extends AppController {
 		}
 	}
 	function edit_pic(){
+		 if(is_null($this->Auth->getUserId())){
+                       Controller::render('/deny');
+         }
 		if (!empty($this->data)) {
 			//	var_dump($this->data);
 			App::import('Vendor', 'upload');
@@ -488,6 +496,84 @@ class UsersController extends AppController {
 	        exit;
 	    }
 	}
+	
+	
+	
+	
+function _get($var) {
+    return isset($this->params['url'][$var])? $this->params['url'][$var]: null;
+}
+    
+function expressCheckout($step=1){
+ // $this->Ssl->force();
+    $this->set('step',$step);
+	 //first get a token
+    if ($step==1){
+        $paymentInfo['Order']['theTotal']= 5;
+        $paymentInfo['Order']['returnUrl']= "http://localhost:8888/users/expressCheckout/2/";
+        $paymentInfo['Order']['cancelUrl']= "http://localhost:8888";
+            
+        // call paypal
+        $result = $this->Paypal->processPayment($paymentInfo,"SetExpressCheckout");
+        $ack = strtoupper($result["ACK"]);
+        
+	//	var_dump( $result );
+		
+		//Detect Errors
+        if($ack!="SUCCESS")
+            $error = $result['L_LONGMESSAGE0'];
+        else {
+			// send user to paypal
+            $token = urldecode($result["TOKEN"]);
+            $payPalURL = PAYPAL_URL.$token;
+            $this->redirect($payPalURL);
+		 }
+    }
+    //next have the user confirm
+    elseif($step==2){
+        //we now have the payer id and token, using the token we should get the shipping address
+        //of the payer. Compile all the info into the session then set for the view.
+        //Add the order total also
+        $result = $this->Paypal->processPayment($this->_get('token'),"GetExpressCheckoutDetails");
+        $result['PAYERID'] = $this->_get('PayerID');
+        $result['TOKEN'] = $this->_get('token');
+        $result['ORDERTOTAL'] = .01;
+        $ack = strtoupper($result["ACK"]);
+        //Detect errors
+        if($ack!="SUCCESS"){
+            $error = $result['L_LONGMESSAGE0'];
+            $this->set('error',$error);
+        }
+        else {
+            $this->set('result',$this->Session->read('result'));
+            $this->Session->write('result',$result);
+            /*
+             * Result at this point contains the below fields. This will be the result passed 
+             * in Step 3. I used a session, but I suppose one could just use a hidden field
+             * in the view:[TOKEN] [TIMESTAMP] [CORRELATIONID] [ACK] [VERSION] [BUILD] [EMAIL] [PAYERID]
+             * [PAYERSTATUS]  [FIRSTNAME][LASTNAME] [COUNTRYCODE] [SHIPTONAME] [SHIPTOSTREET]
+             * [SHIPTOCITY] [SHIPTOSTATE] [SHIPTOZIP] [SHIPTOCOUNTRYCODE] [SHIPTOCOUNTRYNAME]
+             * [ADDRESSSTATUS] [ORDERTOTAL]
+             */
+        }
+    }
+    //show the confirmation
+    elseif($step==3){
+        $result = $this->Paypal->processPayment($this->Session->read('result'),"DoExpressCheckoutPayment");
+    //Detect errors
+        $ack = strtoupper($result["ACK"]);
+        if($ack!="SUCCESS"){
+            $error = $result['L_LONGMESSAGE0'];
+            $this->set('error',$error);
+        }
+        else {
+            $this->set('result',$this->Session->read('result'));
+        }
+    }
+}
+
+	
+	
 	
 }
 ?>

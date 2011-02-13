@@ -1,6 +1,12 @@
 <div class="sidebar6" id="consumer" style="display:block">
-	<div class="corp_signup" id="logging_in" style="display:block">
-	<span class="bodycopy">Returning Users | 
+<div style="margin-left:20px;width:200px;float:right;">
+&nbsp;&nbsp;&nbsp;&nbsp;<?		
+	echo $html->link("Learn how it works!",array('controller'=>'pages', 'action'=>'howitworks'));
+?>	
+</div>
+
+<div class="corp_signup" id="logging_in" style="display:block">
+	<span class="bodycopy">Sign In | 
 		<?php 
 			echo $html->link("Register","#",array('onClick'=>'Effect.SlideDown(\'corp\'); Effect.SlideUp(\'logging_in\');return false;', 'class'=>'bodyblue'));
 			echo $form->create('Auth',array('url'=>substr($this->here,strlen($this->base)))); 
@@ -20,7 +26,7 @@
 		?>
 	</div>
 	<div class="corp_signup" id="corp" style="display:none">
-    <span class="bodycopy">Sign Up | 
+    <span class="bodycopy">Register | 
 		<? 
 			echo $html->link("Sign In", "#", array('onClick'=>'Effect.SlideDown(\'logging_in\'); Effect.SlideUp(\'corp\');return false;'));
 			echo $form->create('User', array('url' => array('action' => 'corpReg'))); 

@@ -656,11 +656,13 @@ body {
 }
 
 .sidebar4 {
-	width:242px;
+	width:750px;
 	float: left;
-	margin-top: 10px;
-	padding-right: 10px;
-	padding-left: 10px;
+	margin-top: 5px;
+	padding-right: 2px;
+	padding-bottom: 5px;
+	padding-left: 40px;
+	//border-style:dashed;
 }
 
 .sidebar5 {
@@ -688,7 +690,7 @@ body {
 }
 
 .sidebar6 {
-	width:650px;
+	width:700px;
 	float: left;
 	margin-top: 10px;
 	padding-right: 25px;

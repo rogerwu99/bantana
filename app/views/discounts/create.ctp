@@ -1,7 +1,7 @@
 <div id="beta" class="section-2">
 
 <table><tr><td>
-	<?php echo $form->input('Address',array('type'=>'text','label'=>false,'value'=>$discount['Discount']['text'])); ?>
+	<?php echo $discount['Discount']['text']; ?>
 	</td><td>
 	
 	<? echo $discount['Discount']['start'];?>

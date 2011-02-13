@@ -41,4 +41,7 @@
  *
  */
 //EOF
+define('ROOT_URL', 'http://localhost:8888');
+define('CONVERSION_RATE', '10');
+
 ?>
