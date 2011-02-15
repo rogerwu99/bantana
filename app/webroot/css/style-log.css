@@ -418,6 +418,7 @@ body {
 .content9 { /* Full no padding! */
 	width:505px;
 	float: left;
+	margin-left:100px;
 }
 
 .content10 { /* Full with bottom border */

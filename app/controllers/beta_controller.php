@@ -1,10 +1,7 @@
 <?php
 
-App::import('Vendor', 'simplegeo', array('file' => 'PEAR'.DS.'SimpleGeo.php'));
-
-
-Configure::write('current_url', 'http://'.$_SERVER['SERVER_NAME'].':'.$_SERVER['SERVER_PORT']);
-
+//App::import('Vendor', 'simplegeo', array('file' => 'PEAR'.DS.'Services'.DS.'SimpleGeo.php'));
+App::import('Vendor', 'simplegeo', array('file' => 'SimpleGeo.php'));
 class BetaController extends AppController 
 {
     var $name = 'Beta';
@@ -12,9 +9,12 @@ class BetaController extends AppController
     var $helpers = array('Html', 'Form', 'Javascript', 'Xml', 'Crumb', 'Ajax');
     var $components = array('Utils', 'Email', 'RequestHandler');
    
+   
+   
     function index()
     {
-			 if(is_null($this->Auth->getUserId())){
+		
+		 if(is_null($this->Auth->getUserId())){
                        Controller::render('/deny');
          }
 	
@@ -66,7 +66,7 @@ class BetaController extends AppController
     function view_my_profile($page = 1)
     {
 		
-			 if(is_null($this->Auth->getUserId())){
+		 if(is_null($this->Auth->getUserId())){
                        Controller::render('/deny');
          }
 	
@@ -124,36 +124,109 @@ class BetaController extends AppController
     }
     function view_my_location($page = 1)
     {
-		
+		$my_long=$this->Session->read('my_long');
+		$my_lat=$this->Session->read('my_lat');
+		$my_address = $this->Session->read('my_address');
+			
 			 if(is_null($this->Auth->getUserId())){
                        Controller::render('/deny');
-         }
+         	}
 	
 			$id = $this->Auth->getUserId();
             $profile = $this->User->findById($id);
-			
+			if ($my_long=='' && $my_lat=='' && trim($my_address)==''){
+		
+				$client = new Services_SimpleGeo('ZJNHYqVpyus8vEwG357mRa8Eh7gwq4WN','yzgWLLsY8QqAB3c2bDhNSCSbDDERaV8E');
+				$ip=$_SERVER['REMOTE_ADDR'];
+				$results = $client->getContextFromIPAddress($ip);
+				$url = "http://where.yahooapis.com/geocode?q=".$results->query->latitude.",".$results->query->longitude."&gflags=R&flags=J&appid=cENXMi4g";
+				
+				$address = json_decode(file_get_contents($url));
+				$full_address = $address->ResultSet->Results[0]->line1." ".$address->ResultSet->Results[0]->line2;
+				$this->set('simplegeo_address',$full_address);
+				$this->set('simplegeo_lat',$results->query->latitude);
+				$this->set('simplegeo_long',$results->query->longitude);
+				$this->Session->write('my_lat',$results->query->latitude);
+				$this->Session->write('my_long',$results->query->longitude);
+				$this->Session->write('my_address',$full_address);
+				$this->set('show_discounts',true);
+				
+			}
+			else{
+				$this->set('simplegeo_address',$my_address);
+				$this->set('simplegeo_lat',$my_lat);
+				$this->set('simplegeo_long',$my_long);
+				$this->set('show_discounts',true);
+			}
 			
     }
 	function manual_location(){
-		
 			 if(is_null($this->Auth->getUserId())){
                        Controller::render('/deny');
          }
 	
 		$url="http://local.yahooapis.com/MapsService/V1/geocode?appid=89YEQTHIkY2SU4r0q7se6KONjW1X8WhRKA--&street=".urlencode($this->data['Beta']['Address']);
 		$xmlObject = simplexml_load_string(file_get_contents($url));
-		$lat=$xmlObject->Result->Latitude;
-		$long=$xmlObject->Result->Longitude;
-		
-		Configure::write('my_lat',$lat);
-		Configure::write('my_long',$long);
+		$lat= (string) $xmlObject->Result->Latitude;
+		$long=(string) $xmlObject->Result->Longitude;
 		
 		
+		$this->Session->write('my_lat',$lat);
+		$this->Session->write('my_long',$long);
+		$this->Session->write('my_address',$this->data['Beta']['Address']);
+	
 		
+	
+		$this->set('address',$this->data['Beta']['Address']);
 		$this->set(compact('lat'));
 		$this->set(compact('long'));
 	
 	
+	}
+	function getLocation($lat,$long){
+		// this function is for auto finding.
+		$this->Session->write('my_lat',$lat);
+		$this->Session->write('my_long',$long);
+		$url = "http://where.yahooapis.com/geocode?q=".$lat.",".$long."&gflags=R&flags=J&appid=cENXMi4g";
+		$address = json_decode(file_get_contents($url));
+		$full_address = $address->ResultSet->Results[0]->line1." ".$address->ResultSet->Results[0]->line2;
+		$this->Session->write('my_address',$full_address);
+				
+				
+		return $full_address;
+		
+		
+		
+		
+		
+	}
+	function addTokens(){
+		/*
+			1 - 100 tokens ($5.00)
+			2 - 250 tokens ($10.00)
+			3 - 500 tokens ($18.00)
+			4 - 1000 tokens ($31.00)
+		
+		*/
+		
+		if (!empty($this->data)) {
+			
+			switch($this->data['Beta']['buy_more_tokens']){
+				case 1:
+					$val=5;
+					break;
+				case 2:
+					$val=10;
+					break;
+				case 3:
+					$val=18;
+					break;
+				case 4:
+					$val=31;
+					break;
+			}
+			$this->redirect(array('controller'=>'users','action'=>'expressCheckout',1,$val));
+		}
 	}
     
 }

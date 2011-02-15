@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
+
 <title>MOO Bantana</title>
 	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"></META>
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" ></link>
 
 	<?php echo $scripts_for_layout ?>
-	<?php //echo $html->css('main'); ?>
-	<?php //echo $html->css('menu'); ?>
 	<?php echo $html->css('style-log'); ?>
 	<?php echo $html->css('type'); ?>
 	
@@ -19,7 +18,7 @@
 
 	
 	<?php print $html->charset('UTF-8'); ?>
-	  <?php print $javascript->link('prototype'); ?>
+	<?php print $javascript->link('prototype'); ?>
     <?php print $javascript->link('scriptaculous.js?load=effects,slider'); ?>
        
 
@@ -37,6 +36,20 @@
 	<!--[if IE 8]>
 	  <?php //echo $html->css('ie7'); ?>
 	<![endif]-->
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21429562-1']);
+  _gaq.push(['_setDomainName', '.bantana.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body>
 	
@@ -93,35 +106,7 @@
 
 </div></div>
 	
-	<script type="text/javascript">
-		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-		</script>
-		<script type="text/javascript">
-		var pageTracker = _gat._getTracker("UA-1271462-7");
-		pageTracker._trackPageview();
-	</script>
 
-        <?php //echo $javascript->link('MM_Swap.js'); ?>
-        <?php //echo $javascript->link('jquery-1.2.6.min.js'); ?>
-        <?php //echo $javascript->link('form.js'); ?>
-        <?php //echo $javascript->link('hint.js'); ?>
-        <?php //echo $javascript->link('ready.js'); ?>
-        <?php //echo $javascript->link('corner.js'); ?>
-        <?php //echo $javascript->link('jquery.selectbox.js'); ?>
-        <?php //echo $javascript->link('tiny_mce/tiny_mce.js'); ?>
-        <script type="text/javascript">
-        /*$(document).ready(function()
-        {
-          //hide the all of the element with class msg_body
-          $(".msg_body").hide();
-          //toggle the componenet with class msg_body
-          $(".msg_head").click(function()
-          {
-            $(this).next(".msg_body").slideToggle(100);
-          });
-        });*/
-        </script>
-
+        
 </body>
 </html>

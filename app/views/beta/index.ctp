@@ -63,9 +63,19 @@
 
 	</td></tr>
 <tr><td class="corp_td" rowspan= 1>
+	
 	<? echo $results[$key]['Discount']['start'];?>
 	</td><td  class="corp_td" rowspan= 1 >
-	<? echo $results[$key]['Discount']['end']; ?>
+	<?  $now = strtotime(date('Y-m-d H:i:s'));
+		$exp = strtotime($results[$key]['Discount']['end']);
+	if ($exp < $now) : 
+	?>
+    <span style="color:#F00">
+		<? echo $results[$key]['Discount']['end']; ?>
+    </span>
+    <? else: ?>
+    	<? echo $results[$key]['Discount']['end']; ?>
+    <? endif; ?>
 	</td>
     	<td  class="corp_td">
 	<?php echo $ajax->link('View', array('controller'=>'discounts', 'action'=>'getusers',$results[$key]['Discount']['id']), array( 'update' => 'userlist_'.$results[$key]['Discount']['id'])); ?>

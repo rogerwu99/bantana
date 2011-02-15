@@ -1,26 +1,28 @@
-<div id="beta" class="section-2">
-
-<table><tr><td>
-	<?php echo $discount['Discount']['text']; ?>
-	</td><td>
+<?php $div_name = 'div_'.$results[$key]['Discount']['id']; ?>
+	<div id='<? echo $div_name; ?>'>
+	<table><tr><td colspan = 2 rowspan=2 class="corp_td">
+	<? echo $discount['Discount']['text'];?> | Value: &nbsp; 
+	<?	echo $discount['Discount']['value'];
+	?>
 	
-	<? echo $discount['Discount']['start'];?>
-	</td><td>
-	
-	<? echo $discount['Discount']['end']; ?>
-	
-	</td><td>
-	<?php echo $html->link('Delete', array('controller'=>'discounts', 'action'=>'delete',$discount['Discount']['id']),array(),'Are you sure you want to delete this?', false); ?>
-</td><td>
-	
-	
+	<td  class="corp_td">
+	<?php echo $ajax->link('Edit', array('controller'=>'discounts', 'action'=>'edit',$discount['Discount']['id']), array( 'update' => $div_name)); ?>
 	</td></tr>
-	
+    <tr>
+        <td  class="corp_td">
+		<?php echo $html->link('Delete', array('controller'=>'discounts', 'action'=>'delete',$discount['Discount']['id']),array(),'Are you sure you want to delete this?', false); ?>
+
+	</td></tr>
+<tr><td class="corp_td" rowspan= 1>
+	<? echo $discount['Discount']['start'];?>
+	</td><td  class="corp_td" rowspan= 1 >
+	<? echo $discount['Discount']['end']; ?>
+	</td>
+    	<td  class="corp_td">
+	<?php echo $ajax->link('View', array('controller'=>'discounts', 'action'=>'getusers',$discount['Discount']['id']), array( 'update' => 'userlist_'.$discount['Discount']['id'])); ?>
+	</td></tr>
 	</table>
-	  
-  
-  
-  
-  
-  </div>
+</div>
+<?php $div_update = 'userlist_'.$discount['Discount']['id']; ?>
+<div id='<?php echo $div_update; ?>' ></div>
   

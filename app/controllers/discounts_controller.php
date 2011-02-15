@@ -13,14 +13,13 @@ class DiscountsController extends AppController
  	
     function create()
 	{
+		
 		if(is_null($this->Auth->getUserId())){
         	Controller::render('/deny');
         }
 	
-//	var_dump($this->data);
-	
 		$text = $this->data['Discount']['text'];
-		$value = $this->data['Discount']['value'];
+		$value = $this->data['Discount']['Value'];
 		$start_normalized = $this->data['Discount']['Start_Time']['meridian'] == "pm" ? (int) $this->data['Discount']['Start_Time']['hour']+12 : $this->data['Discount']['Start_Time']['hour'];
 		$end_normalized = $this->data['Discount']['End_Time']['meridian'] == "pm" ? (int) $this->data['Discount']['End_Time']['hour']+12 : $this->data['Discount']['End_Time']['hour'];
 		$start_time = mktime($start_normalized,$this->data['Discount']['Start_Time']['min'],0,$this->data['Discount']['Start_Day']['month'],$this->data['Discount']['Start_Day']['day'],$this->data['Discount']['Start_Day']['year']);
@@ -32,10 +31,11 @@ class DiscountsController extends AppController
 		$long = $user['longitude'];
 		$name = $user['name'];
 	
+
 		$this->Discount->create();
 		$this->data['Discount']['name']=$name;
 		$this->data['Discount']['text']=$text;
-		$this->data['Discount']['value']=$value;
+		$this->data['Discount']['value']=(int) $value +1;
 		
 		$this->data['Discount']['start'] = date('Y-m-d H:i:s',$start_time);
 		$this->data['Discount']['end'] = date('Y-m-d H:i:s',$end_time);
@@ -44,10 +44,35 @@ class DiscountsController extends AppController
 		$this->data['Discount']['long']= $long;
 		$this->data['Discount']['lat']= $lat;
 		$this->Discount->save($this->data);	
+		//echo $this->Discount->id;
 		$this->set('discount',$this->Discount->findById($this->Discount->id));	
+	//	var_dump($this->Discount->findById($this->Discount->id));
+	//	echo 'hi';
 		       
     }
 	function read(){
+		
+		
+		
+		
+		//check if lat long is different.
+		/*
+		$my_long=$this->Session->read('my_long');
+		$my_lat=$this->Session->read('my_lat');
+		$my_address = $this->Session->read('my_address');
+		
+		
+		$url = "http://where.yahooapis.com/geocode?q=".$results->query->latitude.",".$results->query->longitude."&gflags=R&flags=J&appid=cENXMi4g";
+				$address = json_decode(file_get_contents($url));
+	//		var_dump($address);
+				$full_address = $address->ResultSet->Results[0]->line1." ".$address->ResultSet->Results[0]->line2;
+				$this->set('simplegeo_address',$full_address);
+				$this->set('simplegeo_lat',$results->query->latitude);
+				$this->set('simplegeo_long',$results->query->longitude);
+				$this->Session->write('my_lat',$results->query->latitude);
+				$this->Session->write('my_long',$results->query->longitude);
+				$this->Session->write('my_address',$full_address);
+		*/
 		
 		if(is_null($this->Auth->getUserId())){
                        Controller::render('/deny');
@@ -56,11 +81,15 @@ class DiscountsController extends AppController
 		
 		$lat=$this->data['Discounts']['myLat'];
 		$long=$this->data['Discounts']['myLong'];
-		
+/*		$my_long=$this->Session->read('my_long');
+		$my_lat=$this->Session->read('my_lat');
+		if ($my_lat==$lat && $my_long==$long)
+	*/	
 		$results = $this->Discount->find('all', array('conditions' => (array('Discount.lat BETWEEN ? AND ?'=>array($lat-5,$lat+5),
 																			 'Discount.long BETWEEN ? AND ?'=>array($long-5,$long+5),
 																			 'Discount.end >' => date(	'Y-m-d H:i:s'),
-																			 'Discount.start <'=> date(	'Y-m-d H:i:s')	
+																			 'Discount.start <'=> date(	'Y-m-d H:i:s'),
+																			 'Discount.deleted' => 0	
 																		))));
 			
 		$this->set('myLat',$lat);
@@ -98,6 +127,10 @@ class DiscountsController extends AppController
 		$this->redirect(array('controller'=>'beta','action'=>'index'));
 	} 
 	function edit($id=null){
+		
+	//	$this->Session->write('test','nuts');
+	//	echo $this->Session->read('test');
+		
 			 if(is_null($this->Auth->getUserId())){
                        Controller::render('/deny');
          }
@@ -134,6 +167,8 @@ class DiscountsController extends AppController
 	
 	}
 	function update($id=null){
+		
+//		var_dump($this->Session->read());
 			 if(is_null($this->Auth->getUserId())){
                        Controller::render('/deny');
          }
@@ -189,6 +224,27 @@ class DiscountsController extends AppController
 			$vendor = $this->User->findById($disc['Discount']['user_id']);
 			$this->set(compact('vendor'));
 			$this->set(compact('disc'));
+			
+			
+			
+			$end_date= $disc['Discount']['end'];
+	
+			$eyear=substr($end_date,0,4); 
+			$emonth=substr($end_date,5,2);
+			$eday=substr($end_date,8,2);
+			$ehour=substr($end_date,11,2);
+			$emin=substr($end_date,14,2);
+		
+
+			$this->set(compact('eyear'));
+			$this->set(compact('emonth'));
+			$this->set(compact('eday'));
+			$this->set(compact('ehour'));
+			$this->set(compact('emin'));
+			
+			
+			
+			
 
 			if (empty($db_results)){
 				$this->set('redeemed',false);
@@ -230,9 +286,6 @@ class DiscountsController extends AppController
 				$this->User->set('tokens', $diff);
 				$this->User->save();
 				$this->set('success',true);
-			}
-			else {
-				$this->set('error','You have already redeemed this offer!');
 			}
 		}
 		$this->redirect(array('controller'=>'discounts','action'=>'show',$id));

@@ -1,6 +1,8 @@
 <div id="beta" class="section-1">
 <div class="clear"></div>
  <div id="contents">
+ <input type="hidden" id="simplegeolat" value="<? echo $simplegeo_lat; ?>" />
+	 <input type="hidden" id="simplegeolong" value="<? echo $simplegeo_long; ?>" />
 	   <?php 
 		echo $javascript->link('http://maps.google.com/maps/api/js?sensor=false');
      	echo $javascript->link('http://code.google.com/apis/gears/gears_init.js');
@@ -19,13 +21,20 @@
 		?>
 	
 	</span>
-	
-		<div id="disc_div" style="display:none;">
-		<div style="float:right;"> 	
 		<?php echo $form->create('Discounts'); ?>
-			<input id="myLat" name="data[Discounts][myLat]" type="hidden">
-	  		<input id="myLong" name="data[Discounts][myLong]" type="hidden">
-	   <?php echo $ajax->submit('Get Discounts', array('url'=> array('controller'=>'discounts', 'action'=>'read'), 'update' => 'discounts'));
+		<?php if (!$show_discounts): ?>
+        <div id="disc_div" style="display:none;">
+		<input id="myLat" name="data[Discounts][myLat]" type="hidden">
+	  	<input id="myLong" name="data[Discounts][myLong]" type="hidden">
+	   
+		<? else: ?>
+        <div id="disc_div" style="display:block;">
+       	<input id="myLat" name="data[Discounts][myLat]" type="hidden" value="<? echo $simplegeo_lat; ?>">
+	  	<input id="myLong" name="data[Discounts][myLong]" type="hidden"  value="<? echo $simplegeo_long; ?>">
+	   
+		<? endif; ?>
+        <div style="float:right;"> 	
+		<?php echo $ajax->submit('Get Discounts', array('url'=> array('controller'=>'discounts', 'action'=>'read'), 'update' => 'discounts'));
 			 echo $form->end();
 		?>
 
@@ -40,7 +49,8 @@
 		</div>
 	
 		<article>
-      <p>Finding your location: <span id="status">checking...</span></p>
+      <p>Your location: <span id="status"><? echo $simplegeo_address; ?>
+	</span></p>
    	<div id="right_col" style="float:right;width:200px;height:400px;"></div>
 	
    </article>

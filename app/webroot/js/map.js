@@ -54,7 +54,11 @@ if (navigator.geolocation) {
 
 var initialLocation;
 var siberia = new google.maps.LatLng(60, 105);
-var newyork = new google.maps.LatLng(40.7468,-73.9935);
+var simplegeolat = document.getElementById("simplegeolat").value;
+var simplegeolong = document.getElementById("simplegeolong").value;
+
+var start = new google.maps.LatLng(simplegeolat,simplegeolong);
+ 	
 var browserSupportFlag =  new Boolean();
 var map;
 window.onload=function() {
@@ -63,12 +67,11 @@ window.onload=function() {
   		 mapcanvas.style.height = '400px';
   		 mapcanvas.style.width = '500px';
 	 document.querySelector('article').appendChild(mapcanvas);
-  
-    
+	
 
 	 var myOptions = {
      	zoom: 15,
-		center:newyork,
+		center:start,
     	mapTypeId: google.maps.MapTypeId.ROADMAP
   	 };
   	map = new google.maps.Map(document.getElementById("mapcanvas"), myOptions);
@@ -127,10 +130,11 @@ window.onload=function() {
 	map.setCenter(latLng);
 	document.getElementById("myLat").value = position.coords.latitude;
 document.getElementById("myLong").value = position.coords.longitude;
-	var eDiv=document.getElementById("status");
-		eDiv.appendChild(document.createTextNode("Found you"));
 		document.getElementById("disc_div").style.display="block";
-
+		var req = new Ajax.Request('/beta/getLocation/'+position.coords.latitude+'/'+position.coords.longitude, { method:'get' });
+	alert(req);
+	var eDiv=document.getElementById("status");
+		eDiv.appendChild(document.createTextNode(req));
 		
 //alert(position.coords.latitude + " "+position.coords.longitude);
 	 

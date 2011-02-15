@@ -17,7 +17,10 @@ var myOptions = {
 document.getElementById("myLat").value = <? echo $lat; ?>;
 document.getElementById("myLong").value = <? echo $long; ?>;
 var eDiv= document.getElementById("status");
-eDiv.appendChild(document.createTextNode("Found you"));
+if (eDiv.hasChildNodes()) {
+	eDiv.removeChild(eDiv.lastChild);
+}
+eDiv.appendChild(document.createTextNode("<? echo $address; ?>"));
 document.getElementById("disc_div").style.display="block";
 //Element.show('discounts');
 //document.getElementById("discounts").show;
