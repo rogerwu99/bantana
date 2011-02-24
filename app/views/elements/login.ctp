@@ -12,15 +12,23 @@
 				echo $html->image($_Auth['User']['fb_pic_url'], array('alt' => 'Pic', 'width' => 50, 'height' => 50, 'class' => 'top', 'align'=>'left'));
 			endif; 
 		?></span>
-		&nbsp;	&nbsp;
+		&nbsp;	&nbsp;&nbsp;	&nbsp;
 			<span class="bodycopy"><strong>
 				<?php echo $html->link($_Auth['User']['name'], array('controller'=>'beta','action'=>'view_my_profile')); ?> | 
 			</strong></span>
 			<?php echo $html->link('Location', array('controller'=>'beta','action'=>'view_my_location')); ?>  		
 			<span class="bodycopy"><strong>|</strong></span>
+			<?php if (!is_null($_Auth['User']['longitude'])) : ?>
+            <?php echo $html->link('Discounts', array('controller'=>'beta','action'=>'index')); ?>  		
+            <span class="bodycopy"><strong>|</strong></span>
+			<?php endif; ?>
 			<?php echo $html->link('Sign Out', array('controller'=>'users', 'action'=>'logout')); ?><br>
-			<span class="bodyblue" style="float:right;">You have <? echo $_Auth['User']['tokens']; ?> tokens</span>
-			<?php //echo $form->input('Status', array('options' => array('Available','Not Available','Stealth'))); ?>
+			<?php if (is_null($_Auth['User']['longitude'])) : ?>
+            <?php $tok =  $this->requestAction('users/getTokenCount/'); ?>
+            <?php $bill =  $this->requestAction('users/getBillCount/'); ?>
+			<span class="bodyblue" style="float:right;">You have <? echo $bill; ?> bills & <? echo $tok; ?> tokens</span>
+            <?php //echo $form->input('Status', array('options' => array('Available','Not Available','Stealth'))); ?>
+            <?php endif; ?>
 	</div>
 	
 	<div class="smallercopy" style="margin-left:100px;float:right;"> 

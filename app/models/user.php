@@ -3,17 +3,7 @@ class User extends AppModel {
 
 	var $name = 'User';
     var $actsAs = array('Containable');
-	  				/*	'Uploader.Attachment' => array(
-        					'file' => array(
-            				'uploadDir' 	=> '/img/uploads/',	// Where to upload to, relative to app webroot
-            				'dbColumn'		=> 'path',	// The database column name to save the path to
-            				'maxNameLength'	=> 30,		// Max file name length
-            				'overwrite'		=> false,	// Overwrite file with same name if it exists
-            				'name'		=> '',		// The name to give the file (should be done right before a save)
-            				'transforms' 	=> array()	// What transformations to do on images: scale, resize, etc
-        					)
-    					)
-					);*/
+	  				
     
 	function identicalFieldValues($field=array(), $compare_field=null ) 
     {
@@ -32,44 +22,44 @@ class User extends AppModel {
         }
         return true;
     } 
-    /*
+    
     var $validate = array(
     	
     	'email' => array(
     					'emailFormat' => array(
-    							//'rule'=>array('custom',"/^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9-_](?:[a-z0-9-_]*[a-z0-9])?\.)+(?:[a-z]{2,4}|museum|travel)$/i"),
-    							'required' =>true,
+    							'rule'=>'email',
+	   							'required' =>true,
     							'message' => 'Please input valid email address',
-    							'last'=>true
-    											),
-					'emailUnique' => array(
-							'rule'=>'isUnique',
-							'message' => 'This email has already been registered with Klickable.'
-											)
+    							'last'=>true,
+								'on' => 'create'
     					),
-    	'new_password' => array
+						'emailUnique' => array(
+							'rule'=>'isUnique',
+							'message' => 'This email has already been registered with Bantana.',
+							'last'=>true,
+							'on' => 'create'
+							
+						)
+    			),
+		'new_password' => array
     					(
     					'ruleNotEmpty' => array(
-    						'rule' => array('custom', '/^[^\s]+$/'),
+    						'rule' => array('minLength', '8'),
     						'required' =>true,
-    						'message' => 'Please provide password.',
-    						'last'=>true
+    						'message' => 'Please provide password of at least 8 characters.',
+    						'last'=>true,
+							'on' => 'create'
     											), 
     					'newPasswordRule' => array(
     						'rule' => array('identicalFieldValues', 'confirm_password'),
     						'required' =>true,
-    						'message' => 'Passwords can\'t be empty and must match.'
-    											)
-    					),
-	 'accept' =>array(
-             				'rule' => array('comparison', '!=', 0),  
-             				'required' => true,  
-             				'message' => 'You must agree to the terms of use'
-					)
-
+    						'message' => 'Passwords must match.',
+							'on' => 'create'
+    					)
+    		)
 
   		);
-    */
+    
     /*
 	var $validate = array(
 	                        'email' => array('Required Field' => VALID_NOT_EMPTY, 'rule' => array('email')), 

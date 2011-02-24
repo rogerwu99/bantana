@@ -1,4 +1,4 @@
-<div id="beta" class="section-2">
+<div id="beta" class="section-2" style="margin-left:30px;">
 <? if ($deleted){ 
 	echo "This offer has been deleted or is no longer valid";
 } else {
@@ -48,7 +48,7 @@
 	?> &nbsp;&nbsp;tokens
 	<br>
 	You have: &nbsp;&nbsp;
-	<? echo $_Auth['User']['tokens']; ?>
+	<? echo $tokens; ?>
 	&nbsp;&nbsp;tokens
 	
 	<? if(!$redeemed) { ?>

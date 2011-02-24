@@ -61,9 +61,18 @@ class Paypal{
         
         $returnURL =urlencode($paymentInfo['Order']['returnUrl']);
         $cancelURL =urlencode($paymentInfo['Order']['cancelUrl']);
-
+	$additional_info="";
+	if (!empty($paymentInfo['Order']['L_BILLINGTYPE0'])){
+			$additional_info = '&L_BILLINGTYPE0=RecurringPayments&L_BILLINGAGREEMENTDESCRIPTION0='.urlencode($paymentInfo['Order']['L_BILLINGAGREEMENTDESCRIPTION0']);
+			$smount=0;
+	}
         //$nvpstr='&AMT='.$amount.'&PAYMENTACTION='.$paymentType.'&CURRENCYCODE='.$currencyCode.'&RETURNURL='.$returnURL.'&CANCELURL='.$cancelURL;
-        $nvpstr='&PAYMENTREQUEST_0_AMT='.$amount.'&PAYMENTREQUEST_0_PAYMENTACTION='.$paymentType.'&PAYMENTREQUEST_0_CURRENCYCODE='.$currencyCode.'&RETURNURL='.$returnURL.'&CANCELURL='.$cancelURL;
+        $nvpstr='&PAYMENTREQUEST_0_AMT='.$amount.'&PAYMENTREQUEST_0_PAYMENTACTION='.$paymentType.'&PAYMENTREQUEST_0_CURRENCYCODE='.$currencyCode.'&RETURNURL='.$returnURL.'&CANCELURL='.$cancelURL.$additional_info;
+		
+		
+		
+		
+		
         $resArray=$this->hash_call("SetExpressCheckout",$nvpstr);
         return $resArray;
     }
@@ -82,7 +91,94 @@ class Paypal{
         $resArray=$this->hash_call("DoExpressCheckoutPayment",$nvpstr);
         return $resArray;
     }
-    
+	
+function CreateRecurringPayments($paymentInfo=array()){
+       /* 
+        $firstName =urlencode($paymentInfo['Member']['first_name']);
+        $lastName =urlencode($paymentInfo['Member']['last_name']);
+        $email =urlencode($paymentInfo['Member']['email']);
+        $creditCardType =urlencode($paymentInfo['CreditCard']['credit_type']);
+        $creditCardNumber = urlencode($paymentInfo['CreditCard']['card_number']);
+        $expDateMonth =urlencode($paymentInfo['CreditCard']['expiration_month']);
+        $padDateMonth = str_pad($expDateMonth, 2, '0', STR_PAD_LEFT);
+        $expDateYear =urlencode($paymentInfo['CreditCard']['expiration_year']);
+        $cvv2Number = urlencode($paymentInfo['CreditCard']['cv_code']);
+        $address1 = urlencode($paymentInfo['Member']['billing_address']);
+        $address2 = urlencode($paymentInfo['Member']['billing_address2']);
+        $country = urlencode($paymentInfo['Member']['billing_country']);
+        $city = urlencode($paymentInfo['Member']['billing_city']);
+        $state =urlencode($paymentInfo['Member']['billing_state']);
+        $zip = urlencode($paymentInfo['Member']['billing_zip']);
+        */
+    /*    $description = urlencode('DowntownFirst $16.00');
+        $billingPeriod =urlencode(BILLINGPERIOD);
+        $billingFrequency =urlencode(BILLINGFREQUENCY);
+        $trialBillingPeriod =urlencode(TRIALBILLINGPERIOD);
+        $trialBillingFrequency =urlencode(TRIALBILLINGFREQUENCY);
+        $amt = urlencode(AMT);
+        $trialAmt = urlencode(TRIALAMT);
+      */
+	  
+     
+	  
+	  
+	  
+	  
+	   $description = urlencode($paymentInfo['Description']);
+	   $billingPeriod = urlencode($paymentInfo['BILLINGPERIOD']);
+       $billingFrequency =urlencode($paymentInfo['BILLINGFREQUENCY']);
+       $trialBillingPeriod =urlencode($paymentInfo['TRIALBILLINGPERIOD']);
+       $trialBillingFrequency =urlencode($paymentInfo['TRIALBILLINGFREQUENCY']);
+	   $trialTotalBillingCycles=urlencode($paymentInfo['TRIALTOTALBILLINGCYCLES']);
+
+       $amt = urlencode($paymentInfo['AMT']);
+       $trialAmt = urlencode($paymentInfo['TRIALAMT']);
+ 		 			
+	   
+	   
+	    $failedInitAmtAction = urlencode("ContinueOnFailure");
+        $autoBillAmt = urlencode("AddToNextBilling");
+        $profileReference = urlencode("Anonymous");
+        
+        $currencyCode="USD";
+        
+        $startDate = urlencode(date('Y-m-d',time()+3600+24*30).'T00:00:00Z');
+        
+        $ip=$_SERVER['REMOTE_ADDR'];
+		
+		
+//		RecurringPaymentsProfileDetails
+	
+        
+        /* Construct the request string that will be sent to PayPal.
+           The variable $nvpstr contains all the variables and is a
+           name value pair string with & as a delimiter */
+        //$nvpstr="&EMAIL=$email&DESC=$description&IPADDRESS=$ip&CREDITCARDTYPE=$creditCardType&ACCT=$creditCardNumber&EXPDATE=".$padDateMonth.$expDateYear;
+        //$nvpstr.="&CVV2=$cvv2Number&FIRSTNAME=$firstName&LASTNAME=$lastName&STREET=$address1&STREET2=$address2&CITY=$city&STATE=$state&ZIP=$zip";
+        //$nvpstr.="&COUNTRYCODE=$country"
+		  $nvpstr='&TOKEN='.urlencode($paymentInfo['TOKEN']).'&DESC='.$description;//.'&PAYERID='.urlencode($paymentInfo['PAYERID']).'&PAYMENTACTION='.urlencode($paymentType); 
+     
+		$nvpstr.="&IPADDRESS=$ip&CURRENCYCODE=$currencyCode&PROFILESTARTDATE=$startDate&BILLINGPERIOD=$billingPeriod&BILLINGFREQUENCY=$billingFrequency&AMT=$amt";
+        $nvpstr.='&AUTOBILLAMT='.$autoBillAmt.'&PROFILEREFERENCE='.$profileReference.'&FAILEDINITAMTACTION='.$failedInitAmtAction;
+        $nvpstr.="&TRIALBILLINGPERIOD=$trialBillingPeriod&TRIALBILLINGFREQUENCY=$trialBillingFrequency&TRIALAMT=$trialAmt&TRIALTOTALBILLINGCYCLES=$trialTotalBillingCycles&MAXFAILEDPAYMENTS=1";
+        
+//        echo $nvpstr;
+        
+        /* Make the API call to PayPal, using API signature.
+           The API response is stored in an associative array called $resArray */
+        $resArray=$this->hash_call("CreateRecurringPaymentsProfile",$nvpstr);
+        
+        /* Display the API response back to the browser.
+           If the response from PayPal was a success, display the response parameters'
+           If the response was an error, display the errors received using APIError.php.
+           */
+        
+        return $resArray;
+        //Contains 'TRANSACTIONID,AMT,AVSCODE,CVV2MATCH, Or Error Codes'
+    } 
+	
+	
+	    
     function APIError($errorNo,$errorMsg,$resArray){
         $resArray['Error']['Number']=$errorNo;
         $resArray['Error']['Number']=$errorMsg;

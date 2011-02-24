@@ -1,6 +1,6 @@
 <div id="beta" class="section-1">
 <div class="clear"></div>
- <div id="contents">
+ <div id="contents" style="margin-left:30px;">
  <input type="hidden" id="simplegeolat" value="<? echo $simplegeo_lat; ?>" />
 	 <input type="hidden" id="simplegeolong" value="<? echo $simplegeo_long; ?>" />
 	   <?php 

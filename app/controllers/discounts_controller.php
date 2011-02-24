@@ -2,7 +2,7 @@
 class DiscountsController extends AppController 
 {
     var $name = 'Discounts';
-    var $uses = array('User', 'Mail', 'Discount','Redeem'); 
+    var $uses = array('User', 'Mail', 'Discount','Redeem','Token'); 
     var $helpers = array('Html', 'Form', 'Javascript', 'Xml', 'Crumb','Ajax');
     var $components = array('Utils', 'Email', 'RequestHandler');
    
@@ -30,26 +30,41 @@ class DiscountsController extends AppController
 		$lat = $user['latitude'];
 		$long = $user['longitude'];
 		$name = $user['name'];
-	
-
+		$start = date('Y-m-d H:i:s',$start_time);
+		$end = date('Y-m-d H:i:s',$end_time);
+		$now = date('Y-m-d H:i:s');
 		$this->Discount->create();
 		$this->data['Discount']['name']=$name;
 		$this->data['Discount']['text']=$text;
 		$this->data['Discount']['value']=(int) $value +1;
 		
-		$this->data['Discount']['start'] = date('Y-m-d H:i:s',$start_time);
-		$this->data['Discount']['end'] = date('Y-m-d H:i:s',$end_time);
+		$this->data['Discount']['start'] = $start;
+		$this->data['Discount']['end'] = $end;
+		
+		if(strtotime( date('Y-m-d H:i:s',$start_time)) > strtotime( date('Y-m-d H:i:s',$end_time)))
+		{ 
+		//		echo '1invalid';
+			$this->set('error', true);
+			$this->set('message', 'Start time cannot be before end time.');
+		}
+		else if (strtotime($end) < strtotime($now)) 
+		{ 
+	//			echo '2invalid';
+			$this->set('error', true);
+			$this->set('message', 'End time cannot be before current time.');
+		}
+		
+		else {
+//			echo 'valid';
 	
-		$this->data['Discount']['user_id']=$user_id;
-		$this->data['Discount']['long']= $long;
-		$this->data['Discount']['lat']= $lat;
-		$this->Discount->save($this->data);	
-		//echo $this->Discount->id;
-		$this->set('discount',$this->Discount->findById($this->Discount->id));	
-	//	var_dump($this->Discount->findById($this->Discount->id));
-	//	echo 'hi';
-		       
-    }
+			$this->data['Discount']['user_id']=$user_id;
+			$this->data['Discount']['long']= $long;
+			$this->data['Discount']['lat']= $lat;
+			$this->Discount->save($this->data);	
+			$this->set('discount',$this->Discount->findById($this->Discount->id));	
+			$this->set('message','Your discount saved successfully.');
+		}
+	}
 	function read(){
 		
 		
@@ -124,7 +139,7 @@ class DiscountsController extends AppController
 			$this->Discount->set('deleted', 1);
 			$this->Discount->save();
 		}
-		$this->redirect(array('controller'=>'beta','action'=>'index'));
+		$this->redirect(array('controller'=>'beta','action'=>'index',$id));
 	} 
 	function edit($id=null){
 		
@@ -216,6 +231,8 @@ class DiscountsController extends AppController
 	}
 	function show($id=null){
 		$disc = $this->Discount->findById($id);
+		$tok = $this->Token->find('first',array('conditions'=>array('Token.user_id'=>$this->Auth->getUserId())));
+		$this->set('tokens',$tok['Token']['tokens']);
 		if ($disc['Discount']['deleted']==1){
 			$this->set('deleted',true);
 		}
@@ -270,9 +287,9 @@ class DiscountsController extends AppController
 		$id=$this->data['Discount']['id'];
 		$user_id=$this->Auth->getUserId();
 		$db_results=$this->Redeem->find('all',array('conditions'=>array('Redeem.disc_id'=>$id,'Redeem.user_id'=>$user_id)));
-		$disc_value = $this->Discount->read('value',$id);
-		$user_tokens = $this->User->read('tokens',$user_id);
-		if ($disc_value['Discount']['value'] * CONVERSION_RATE > $user_tokens['User']['tokens']){
+		$disc = $this->Discount->read('value',$id);
+		$tok = $this->Token->find('first',array('conditions'=>array('Token.user_id'=>$this->Auth->getUserId())));
+		if ($disc['Discount']['value'] * CONVERSION_RATE > $tok['Token']['tokens']){
 			$this->set('error','You do not have enough tokens!');
 		}
 		else {
@@ -282,10 +299,12 @@ class DiscountsController extends AppController
 				$this->data['Redeem']['user_id'] = $user_id; 
 				$this->data['Redeem']['disc_id'] = $id;
 				$this->Redeem->save($this->data);
-				$diff = $user_tokens['User']['tokens']-$disc_value['Discount']['value']*CONVERSION_RATE;
-				$this->User->set('tokens', $diff);
-				$this->User->save();
-				$this->set('success',true);
+				$diff = $tok['Token']['tokens']-$disc['Discount']['value']*CONVERSION_RATE;
+				$this->Token->read(null,$tok['Token']['id']);
+				$this->Token->set('tokens', $diff);
+				$this->Token->save();
+				$this->set('tokens',$diff);
+				$this->redirect(array('controller'=>'mail','action'=>'send_redeem_message', $user_id, $id));
 			}
 		}
 		$this->redirect(array('controller'=>'discounts','action'=>'show',$id));

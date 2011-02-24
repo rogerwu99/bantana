@@ -131,10 +131,26 @@ window.onload=function() {
 	document.getElementById("myLat").value = position.coords.latitude;
 document.getElementById("myLong").value = position.coords.longitude;
 		document.getElementById("disc_div").style.display="block";
-		var req = new Ajax.Request('/beta/getLocation/'+position.coords.latitude+'/'+position.coords.longitude, { method:'get' });
-	alert(req);
+		/*new Ajax.Request('http://locahost:8888/beta/getLocation/'+position.coords.latitude+'/'+position.coords.longitude, { 
+						method:'get',
+						 onComplete: function(transport) {
+    						alert(transport.responseText);
+	    						alert(transport.headerJSON);
+							alert('in here');
+						 }
+						});
+	*/
 	var eDiv=document.getElementById("status");
-		eDiv.appendChild(document.createTextNode(req));
+	while (eDiv.hasChildNodes()) {
+			eDiv.removeChild(eDiv.lastChild);
+		}
+
+	new Ajax.Updater('status','http://localhost:8888/beta/getLocation/',{method: 'get', parameters: { latitude: position.coords.latitude, longitude: position.coords.longitude }});
+
+	
+	alert("Found You");
+	
+	//	eDiv.appendChild(document.createTextNode(req));
 		
 //alert(position.coords.latitude + " "+position.coords.longitude);
 	 

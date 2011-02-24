@@ -6,7 +6,7 @@
 	<br>
 	<?php	echo $html->link($html->image("signin_twitter.gif", array('alt'=>'Login With Twitter', 'width'=>'150', 'height'=>'22', 'border'=>'0')),array('controller'=>'users', 'action'=>'getRequestURL'),array('escape'=>false)); ?>
 	<br>
-	<?	echo $html->link('Business Login','/pages/business'); ?>
+	<?	echo $html->link('Business Login','/users/corpReg'); ?>
 	<? else: ?>
 		Business Login | <?php echo $html->link('User Login','/'); ?>
 	<? endif; ?>

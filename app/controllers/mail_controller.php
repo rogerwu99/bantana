@@ -2,7 +2,7 @@
 class MailController extends AppController 
 {
     var $name = 'Mail';
-    var $uses = array('User');//, 'Error', 'ErrorCode', 'Alert');
+    var $uses = array('User','Discount');//, 'Error', 'ErrorCode', 'Alert');
     var $components = array('Email');
     
     function send_new_registrant($email, $name) 
@@ -22,7 +22,7 @@ class MailController extends AppController
 	{
 		$this->Email->to = $email;
         $this->Email->subject = 'Welcome to Bantana';
-        $this->Email->replyTo = 'rogerwu99@yahoo.com';
+        $this->Email->replyTo = 'roger@alumni.upenn.edu';
         $this->Email->from = 'Bantana <rogerwu99@bantana.com>';
         $this->Email->template = 'welcome';
         $this->set('email', $email);
@@ -37,6 +37,26 @@ class MailController extends AppController
 		
 	//	return;
 	//exit;
+	}
+	function send_redeem_message($user_id,$discount_id)
+	{
+		$user = $this->User->findById($user_id);
+		$discount = $this->Discount->findById($discount_id);
+	//	var_dump($user);
+	//	var_dump($discount);
+		$this->Email->to = $user['User']['email'];
+        $this->Email->subject = 'Your Bantana Deal is Ready!';
+        $this->Email->replyTo = 'roger@alumni.upenn.edu';
+        $this->Email->from = 'Bantana <rogerwu99@bantana.com>';
+        $this->Email->template = 'deal';
+        $this->set(compact('user'));
+        $this->set(compact('discount'));
+		//user_name 
+		//discount_name
+		//discount_text
+		$this->Email->send();
+		$this->redirect(array('controller'=>'discounts','action'=>'show',$discount['Discount']['id']));
+
 	}
 }
 ?>

@@ -407,8 +407,7 @@ body {
 }
 
 .content8 { /* Full */
-	width:491px;
-	float: left;
+	width:240px;
 	border: 7px solid #EBECED;
 	padding-top: 15px;
 	padding-bottom: 15px;
@@ -471,6 +470,11 @@ body {
 	margin-top: 10px;
 	background-image: url(../img/dashboard_add_video_01.jpg);
 	background-repeat: repeat-x;
+}
+
+
+.error-message{
+	color:#F00;
 }
 
 .floatleft { /* Float left item */

@@ -68,28 +68,24 @@
             <div id="maincontentwrapper">
               <div id="shadowleft"></div>
               <div id="contentwrapper">
-		       	<?php if(empty($_Auth['User'])): ?>
-              	<div id="contentwrapper"><div id="leftcolumn">
-				<div class="container_12"><div class="grid_12">
+		       	<div id="contentwrapper"><div id="leftcolumn">
+		    	<div class="container_12"><div class="grid_12">
 					<div class="nav">
-						<?php echo $this->element('login-prompt');?>
+				   	<?php if(empty($_Auth['User'])): ?>
+       					<?php echo $this->element('login-prompt');?>
 					</div>
 						<?php echo $this->element('logo'); ?>
 				</div></div>
 				<?php echo $content_for_layout; ?>
-				</div></div>
 				<?php else: ?>
-                <div id="contentwrapper"><div id="leftcolumn">
-				<div class="container_12"><div class="grid_12">
-					<div class="nav">
-						<?php echo $this->element('login');?>
+            			<?php echo $this->element('login');?>
 					</div>
 						<?php echo $this->element('logo'); ?>
-				</div>		
+				</div></div>		
 	            <?php echo $content_for_layout; ?>
-				</div></div> 
-			  	<?php endif; ?>
-			   </div></div>
+				<?php endif; ?>
+			   </div></div> 
+			  	</div></div>
 		<div id="roundedbottomwrapper">
          <div id="bottomleftcorner"></div>
           <div id="bottomcenterborderwrapper">

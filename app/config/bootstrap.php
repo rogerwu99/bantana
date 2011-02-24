@@ -43,5 +43,6 @@
 //EOF
 define('ROOT_URL', 'http://localhost:8888');
 define('CONVERSION_RATE', '10');
+define('FULL_BANK',48);
 
 ?>

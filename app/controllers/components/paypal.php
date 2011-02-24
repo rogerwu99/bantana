@@ -15,6 +15,8 @@ class PaypalComponent extends Object{
             return $paypal->GetExpressCheckoutDetails($paymentInfo);
         elseif ($function=="DoExpressCheckoutPayment")
             return $paypal->DoExpressCheckoutPayment($paymentInfo);
+        elseif ($function=="CreateRecurringPayments")
+            return $paypal->CreateRecurringPayments($paymentInfo);
         else
             return "Function Does Not Exist!";
     }

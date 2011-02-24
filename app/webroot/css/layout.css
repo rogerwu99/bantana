@@ -189,6 +189,19 @@ background: -moz-linear-gradient(top, #88bfe8 0%, #70b0e0 100%); /* firefox */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#88bfe8), color-stop(100%,#70b0e0)); /* webkit */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#88bfe8', endColorstr='#70b0e0',GradientType=0 ); /* ie */
 }
+.deals_td{
+	color: #3C9
+font-weight: bold;
+font-family:Arial, Helvetica, sans-serif;
+//width: 100%;
+-moz-border-radius: 5px;
+border-radius: 5px;
+padding: 10px;
+background: #a1d279; /* old browsers */
+background: -moz-linear-gradient(top, #a1d279 0%, #a9d880 100%); /* firefox */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a1d279), color-stop(100%,#a9d880)); /* webkit */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a1d279', endColorstr='#a9d880',GradientType=0 ); /* ie */
+}
 .disc_td{
 color: #3F6
 font-weight: bold;

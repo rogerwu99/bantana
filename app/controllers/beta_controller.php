@@ -1,5 +1,4 @@
 <?php
-
 //App::import('Vendor', 'simplegeo', array('file' => 'PEAR'.DS.'Services'.DS.'SimpleGeo.php'));
 App::import('Vendor', 'simplegeo', array('file' => 'SimpleGeo.php'));
 class BetaController extends AppController 
@@ -9,9 +8,7 @@ class BetaController extends AppController
     var $helpers = array('Html', 'Form', 'Javascript', 'Xml', 'Crumb', 'Ajax');
     var $components = array('Utils', 'Email', 'RequestHandler');
    
-   
-   
-    function index()
+    function index($id=null)
     {
 		
 		 if(is_null($this->Auth->getUserId())){
@@ -38,7 +35,12 @@ class BetaController extends AppController
 			$lat = $user['latitude'];
 			$long = $user['longitude'];
 			$range = $user['range'];
-			
+			if (!is_null($id)) {
+				$disc = $this->Discount->findById($id);
+			//	echo $disc['Discount']['text'];
+				$this->set('dtext',$disc['Discount']['text']);
+				$this->set('dvalue',$disc['Discount']['value']);
+			}
 		
 		}
 		else {
@@ -135,12 +137,18 @@ class BetaController extends AppController
 			$id = $this->Auth->getUserId();
             $profile = $this->User->findById($id);
 			if ($my_long=='' && $my_lat=='' && trim($my_address)==''){
-		
+	
 				$client = new Services_SimpleGeo('ZJNHYqVpyus8vEwG357mRa8Eh7gwq4WN','yzgWLLsY8QqAB3c2bDhNSCSbDDERaV8E');
+	
 				$ip=$_SERVER['REMOTE_ADDR'];
-				$results = $client->getContextFromIPAddress($ip);
+				if ($ip=='::1') {
+					$results = $client->getContextFromIPAddress();
+				}
+				else {
+					$results = $client->getContextFromIPAddress($ip);
+				}
 				$url = "http://where.yahooapis.com/geocode?q=".$results->query->latitude.",".$results->query->longitude."&gflags=R&flags=J&appid=cENXMi4g";
-				
+	
 				$address = json_decode(file_get_contents($url));
 				$full_address = $address->ResultSet->Results[0]->line1." ".$address->ResultSet->Results[0]->line2;
 				$this->set('simplegeo_address',$full_address);
@@ -153,6 +161,7 @@ class BetaController extends AppController
 				
 			}
 			else{
+	
 				$this->set('simplegeo_address',$my_address);
 				$this->set('simplegeo_lat',$my_lat);
 				$this->set('simplegeo_long',$my_long);
@@ -183,18 +192,19 @@ class BetaController extends AppController
 	
 	
 	}
-	function getLocation($lat,$long){
+	function getLocation(){
+		$results = $this->params['url'];
 		// this function is for auto finding.
-		$this->Session->write('my_lat',$lat);
-		$this->Session->write('my_long',$long);
-		$url = "http://where.yahooapis.com/geocode?q=".$lat.",".$long."&gflags=R&flags=J&appid=cENXMi4g";
+		$this->Session->write('my_lat',$results['latitude']);
+		$this->Session->write('my_long',$resuls['longitude']);
+		$url = "http://where.yahooapis.com/geocode?q=".$results['latitude'].",".$results['longitude']."&gflags=R&flags=J&appid=cENXMi4g";
 		$address = json_decode(file_get_contents($url));
 		$full_address = $address->ResultSet->Results[0]->line1." ".$address->ResultSet->Results[0]->line2;
 		$this->Session->write('my_address',$full_address);
 				
-				
-		return $full_address;
-		
+		$this->set('address',$full_address);		
+	//	return $full_address;
+	//	exit;
 		
 		
 		
@@ -210,26 +220,62 @@ class BetaController extends AppController
 		*/
 		
 		if (!empty($this->data)) {
-			
+			$tokens = $this->data['Beta']['buy_more_tokens'];
+			$bills = $this->data['Beta']['buy_more_bills'];
 			switch($this->data['Beta']['buy_more_tokens']){
 				case 1:
-					$val=5;
+					$valtok=5;
 					break;
 				case 2:
-					$val=10;
+					$valtok=10;
 					break;
 				case 3:
-					$val=18;
+					$valtok=18;
 					break;
 				case 4:
-					$val=31;
+					$valtok=31;
 					break;
+				default:
+					$tokens=0;
 			}
-			$this->redirect(array('controller'=>'users','action'=>'expressCheckout',1,$val));
+			$type = $tokens.'tok';
+			switch($this->data['Beta']['buy_more_bills']){
+				
+				case 1:
+					$valbill=5;
+					break;
+				case 2:
+					$valbill=10;
+					break;
+				case 3:
+					$valbill=18;
+					break;
+				case 4:
+					$valbill=31;
+					break;
+				default:
+					$bills = 0;
+			}
+	    	$type .= $bills.'bill';
+			$val = $valtok + $valbill;
+			
+			
+			
+			$this->redirect(array('controller'=>'users','action'=>'expressCheckout',1,$val,$type));
 		}
 	}
-    
+    function code(){
+		if (!empty($this->data)) {
+			if ($this->data['DC']['text']=="2011SPR"){
+				$this->set('starting','false');
+			}
+			else {
+				$this->set('error','Unrecognized Code');
+			}
+		}
+		$this->render('/elements/pay');
+	
+	}
 }
-
 
 ?>
